@@ -1,6 +1,6 @@
 "use strict"
 
-WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Marionette, $, _) {
+Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionette, $, _) {
 	this.startWithParent = false;
 
 	ResourcesApp.Router = Marionette.AppRouter.extend({
@@ -25,7 +25,7 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 
 		ResourcesApp.panelView = new ResourcesApp.PanelView();
 
-		WhiteDAV.getRegion("app").show(ResourcesApp.layoutView);
+		Sanato.getRegion("app").show(ResourcesApp.layoutView);
 
 		ResourcesApp.layoutView.getRegion("breadcrumb").show(ResourcesApp.breadcrumbCollectionView);
 		ResourcesApp.layoutView.getRegion("panel").show(ResourcesApp.panelView);
@@ -33,13 +33,13 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 
 
 
-		WhiteDAV.addInitializer(function() {
+		Sanato.addInitializer(function() {
 			new ResourcesApp.Router({
 				controller: ResourcesApp.Controller
 			});
 		});
 
-		WhiteDAV.trigger("resourcesapp:stat", ResourcesApp.currentPath);
+		Sanato.trigger("resourcesapp:stat", ResourcesApp.currentPath);
 		
 		// create layout view and display it
 		// initialize resources to zero

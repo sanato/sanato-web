@@ -1,6 +1,6 @@
 "use strict"
 
-WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Marionette, $, _) {
+Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionette, $, _) {
 	ResourcesApp.LayoutView = Marionette.LayoutView.extend({
 		template: "#resources-app-layout-template",
 		regions: {
@@ -57,15 +57,15 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 							if (from !== view.model.get("path")){
 								var el = $(ui.helper);
 								var from = el.find("span").text();
-								WhiteDAV.trigger("resourcesapp:rename", from, view.model.get("path") + "/" +  from.split("/").pop());
+								Sanato.trigger("resourcesapp:rename", from, view.model.get("path") + "/" +  from.split("/").pop());
 								//view.$el.removeClass("info");
 							}
 						} else {
 							ResourcesApp.selectedCollection.forEach(function(model) {
 								if (model.get("path") !== view.model.get("path")) {
-									WhiteDAV.trigger("resourcesapp:rename", model.get("path"), view.model.get("path") + "/" +  model.get("path").split("/").pop());
+									Sanato.trigger("resourcesapp:rename", model.get("path"), view.model.get("path") + "/" +  model.get("path").split("/").pop());
 								} else {
-									WhiteDAV.trigger("unselect", model.get("path"));
+									Sanato.trigger("unselect", model.get("path"));
 								}
 							});
 						}
@@ -192,28 +192,28 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 
 		onDeleteButtonClick: function(e) {
 			e.preventDefault();
-			WhiteDAV.trigger("resourcesapp:remove", this.model.get("path"));
+			Sanato.trigger("resourcesapp:remove", this.model.get("path"));
 		},
 		
 
 		onDownloadButtonClick: function(e) {
 			e.preventDefault();
-			WhiteDAV.trigger("resourcesapp:download", this.model.get("path"));
+			Sanato.trigger("resourcesapp:download", this.model.get("path"));
 		},
 
 		onIconButtonClick: function(e) {
 			e.preventDefault();
 			if (this.model.get("isCol")) {
-				WhiteDAV.trigger("resourcesapp:stat", this.model.get("path"));
+				Sanato.trigger("resourcesapp:stat", this.model.get("path"));
 			} else {
-				WhiteDAV.trigger("resourcesapp:download", this.model.get("path"));
+				Sanato.trigger("resourcesapp:download", this.model.get("path"));
 			}
 		},
 		onCheckboxClick: function(e) {
 			if (this.$el.hasClass("danger")) {
-				WhiteDAV.trigger("resourcesapp:unselect", this.model.get("path"));	
+				Sanato.trigger("resourcesapp:unselect", this.model.get("path"));	
 			} else {
-				WhiteDAV.trigger("resourcesapp:select", this.model.get("path"));	
+				Sanato.trigger("resourcesapp:select", this.model.get("path"));	
 			}
 		}
 	});
@@ -236,15 +236,15 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 		},
 		onCheckboxAllClick: function(e) {
 			if(!this.ui.checkboxAll.is(":checked")) {
-				WhiteDAV.trigger("resourcesapp:unselectall");
+				Sanato.trigger("resourcesapp:unselectall");
 			} else {
-				WhiteDAV.trigger("resourcesapp:selectall");
+				Sanato.trigger("resourcesapp:selectall");
 			}
 		},
 		onDeleteAllClick: function(e) {
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
 			ResourcesApp.selectedCollection.forEach(function(model) {
-				WhiteDAV.trigger("resourcesapp:remove", model.get("path"));
+				Sanato.trigger("resourcesapp:remove", model.get("path"));
 			});
 		},
 		onAdd: function(model) {
@@ -261,7 +261,7 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 		onClick: function(e) {
 			e.preventDefault();
 			var path = this.model.get("path");
-			WhiteDAV.trigger("resourcesapp:stat", path);
+			Sanato.trigger("resourcesapp:stat", path);
 		}
 	});
 
@@ -308,7 +308,7 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 			e.preventDefault();
 			if (e.keyCode === 13) {
 				var path = ResourcesApp.currentPath === "/" ?  self.ui.newFolderInput.val(): ResourcesApp.currentPath + "/" + self.ui.newFolderInput.val()
-				WhiteDAV.trigger("resourcesapp:mkcol", path);
+				Sanato.trigger("resourcesapp:mkcol", path);
 				self.ui.newFolderInputGroup.addClass("hidden");
 				self.ui.newFolderInput.val("");
 			} else if (e.keyCode === 27) {

@@ -1,6 +1,6 @@
 "use strict"
 
-WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Marionette, $, _) {
+Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionette, $, _) {
 	ResourcesApp.Resource = Backbone.Model.extend({});
 	ResourcesApp.ResourceCollection = Backbone.Collection.extend({
 		model: ResourcesApp.Resource,
@@ -22,7 +22,7 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 		
 	};
 
-	WhiteDAV.reqres.setHandler("app:files:breadcrumb:breadcrumbs", function(path) {
+	Sanato.reqres.setHandler("app:files:breadcrumb:breadcrumbs", function(path) {
 		return API.getBreadcrumbs(path);
 	});
 	var API = {
@@ -133,22 +133,22 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 		}
 	}
 
-	WhiteDAV.reqres.setHandler("resourcesapp:stat", function(path) {
+	Sanato.reqres.setHandler("resourcesapp:stat", function(path) {
 		return API.stat(path);
 	});
-	WhiteDAV.reqres.setHandler("resourcesapp:download", function(path) {
+	Sanato.reqres.setHandler("resourcesapp:download", function(path) {
 		return API.download(path);
 	});
-	WhiteDAV.reqres.setHandler("resourcesapp:remove", function(path) {
+	Sanato.reqres.setHandler("resourcesapp:remove", function(path) {
 		return API.remove(path);
 	});
-	WhiteDAV.reqres.setHandler("resourcesapp:mkcol", function(path) {
+	Sanato.reqres.setHandler("resourcesapp:mkcol", function(path) {
 		return API.mkcol(path);
 	});
-	WhiteDAV.reqres.setHandler("resourcesapp:rename", function(from, to) {
+	Sanato.reqres.setHandler("resourcesapp:rename", function(from, to) {
 		return API.rename(from, to);
 	});
-	WhiteDAV.reqres.setHandler("resourcesapp:breadcrumbs", function(path) {
+	Sanato.reqres.setHandler("resourcesapp:breadcrumbs", function(path) {
 		return API.getBreadcrumbs(path);
 	});
 });

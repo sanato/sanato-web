@@ -1,17 +1,17 @@
 "use strict"
 
-window.WhiteDAV = new Marionette.Application();
+window.Sanato = new Marionette.Application();
 	
-WhiteDAV.navigate = function(route, options) {
+Sanato.navigate = function(route, options) {
 	options = options || {};
 	Backbone.history.navigate(route, options);
 };
 
-WhiteDAV.getCurrentRoute = function() {
+Sanato.getCurrentRoute = function() {
 	return Backbone.history.fragment;
 };
 
-WhiteDAV.addRegions({
+Sanato.addRegions({
 	main: "#main",
 	header: "#header",
 	banner: "#banner",
@@ -20,19 +20,19 @@ WhiteDAV.addRegions({
 	footer: "#footer"
 });
 
-WhiteDAV.on("start", function() {
-	//WhiteDAV.ResourcesApp.start();
+Sanato.on("start", function() {
+	//Sanato.ResourcesApp.start();
 	if(Backbone.history) {
-		//Backbone.history.start({root: "/webprivate/whitedav/index-new.html"});
+		//Backbone.history.start({root: "/webprivate/sanato/index-new.html"});
 		Backbone.history.start();
 		if(this.getCurrentRoute() === "") {
-			//WhiteDAV.trigger("resourcesapp:stat", "/");
+			//Sanato.trigger("resourcesapp:stat", "/");
 		}
 	}
 });
 
 $(document).ajaxError(function( event, jqxhr, settings, thrownError ) {
 	if(jqxhr.status === 401) {
-		window.location.href = "/webpublic/";
+		alert("you are not authenticated");
 	}
 });

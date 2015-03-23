@@ -1,6 +1,6 @@
 "use strict"
 
-WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Marionette, $, _) {
+Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionette, $, _) {
 	ResourcesApp.Controller = {
 		stat: function(path) {
 			ResourcesApp.selectedCollection.reset();
@@ -8,16 +8,16 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
 
 			ResourcesApp.layoutView.getRegion("grid").$el.hide();
-			ResourcesApp.layoutView.getRegion("loader").show(new WhiteDAV.Common.LoadingView());
-			var stating = WhiteDAV.request("resourcesapp:stat", path);
+			ResourcesApp.layoutView.getRegion("loader").show(new Sanato.Common.LoadingView());
+			var stating = Sanato.request("resourcesapp:stat", path);
 			$.when(stating).done(function(data) {
 				ResourcesApp.currentPath = path;
 				ResourcesApp.resourceCollection.reset(data);
-				ResourcesApp.breadcrumbCollection.reset(WhiteDAV.request("resourcesapp:breadcrumbs", path));
-				WhiteDAV.navigate("resources" + path);
+				ResourcesApp.breadcrumbCollection.reset(Sanato.request("resourcesapp:breadcrumbs", path));
+				Sanato.navigate("resources" + path);
 			});
 			$.when(stating).fail(function(data) {
-				WhiteDAV.trigger("notification:show", "danger", "stating path " + path + " failed");
+				Sanato.trigger("notification:show", "danger", "stating path " + path + " failed");
 			});
 			$.when(stating).always(function() {
 				ResourcesApp.layoutView.getRegion("loader").empty();
@@ -25,11 +25,11 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 			});
 		},
 		download: function(path) {
-			WhiteDAV.request("resourcesapp:download", path);
+			Sanato.request("resourcesapp:download", path);
 		},
 		remove: function(path) {
-			WhiteDAV.execute("set:resourcesapp:deleteiconloader:show", path);
-			var removing = WhiteDAV.request("resourcesapp:remove", path);
+			Sanato.execute("set:resourcesapp:deleteiconloader:show", path);
+			var removing = Sanato.request("resourcesapp:remove", path);
 			$.when(removing).done(function() {
 				ResourcesApp.resourceCollection.remove(ResourcesApp.resourceCollection.get(path));
 				ResourcesApp.resourceCollectionView.ui.selectStats.text("Selected " + ResourcesApp.selectedCollection.length + " items");
@@ -45,7 +45,7 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 			});
 		},
 		mkcol: function(path) {
-			var mkcoling = WhiteDAV.request("resourcesapp:mkcol", path);
+			var mkcoling = Sanato.request("resourcesapp:mkcol", path);
 			var view = ResourcesApp.panelView;
 			view.ui.newButton.toggleClass("disabled");
 			var loader = "<img class='loader' src='assets/img/ajax-loader.gif' />";
@@ -71,7 +71,7 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 			childview.ui.iconButton.addClass("hidden");
 			childview.ui.iconLoader.removeClass("hidden");
 
-			var renaming = WhiteDAV.request("resourcesapp:rename", from, to);
+			var renaming = Sanato.request("resourcesapp:rename", from, to);
 			$.when(renaming).done(function() {
 				console.log("rename done");
 				ResourcesApp.resourceCollection.remove(ResourcesApp.resourceCollection.get(from));
@@ -120,14 +120,14 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", true);
 			ResourcesApp.resourceCollectionView.ui.deleteAll.removeClass("hidden");
 			ResourcesApp.resourceCollection.forEach(function(model){
-				WhiteDAV.trigger("resourcesapp:select", model.get("path"));
+				Sanato.trigger("resourcesapp:select", model.get("path"));
 			});
 		},
 		unselectAll: function() {
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
 			ResourcesApp.resourceCollectionView.ui.deleteAll.addClass("hidden");
 			ResourcesApp.resourceCollection.forEach(function(model){
-				WhiteDAV.trigger("resourcesapp:unselect", model.get("path"));
+				Sanato.trigger("resourcesapp:unselect", model.get("path"));
 			});
 		},
 		_showSelectStats: function() {
@@ -145,35 +145,35 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 		}
 	};
 
-	WhiteDAV.on("resourcesapp:stat", function(path) {
+	Sanato.on("resourcesapp:stat", function(path) {
 		return ResourcesApp.Controller.stat(path);
 	});
-	WhiteDAV.on("resourcesapp:download", function(path) {
+	Sanato.on("resourcesapp:download", function(path) {
 		return ResourcesApp.Controller.download(path);
 	});
-	WhiteDAV.on("resourcesapp:remove", function(path) {
+	Sanato.on("resourcesapp:remove", function(path) {
 		return ResourcesApp.Controller.remove(path);
 	});
-	WhiteDAV.on("resourcesapp:mkcol", function(path) {
+	Sanato.on("resourcesapp:mkcol", function(path) {
 		return ResourcesApp.Controller.mkcol(path);
 	});
-	WhiteDAV.on("resourcesapp:rename", function(from, to) {
+	Sanato.on("resourcesapp:rename", function(from, to) {
 		return ResourcesApp.Controller.rename(from, to);
 	});
-	WhiteDAV.on("resourcesapp:select", function(path) {
+	Sanato.on("resourcesapp:select", function(path) {
 		return ResourcesApp.Controller.select(path);
 	});
-	WhiteDAV.on("resourcesapp:unselect", function(path) {
+	Sanato.on("resourcesapp:unselect", function(path) {
 		return ResourcesApp.Controller.unselect(path);
 	});
-	WhiteDAV.on("resourcesapp:selectall", function(path) {
+	Sanato.on("resourcesapp:selectall", function(path) {
 		return ResourcesApp.Controller.selectAll(path);
 	});
-	WhiteDAV.on("resourcesapp:unselectall", function(path) {
+	Sanato.on("resourcesapp:unselectall", function(path) {
 		return ResourcesApp.Controller.unselectAll(path);
 	});
 
-	WhiteDAV.commands.setHandler("set:resourcesapp:deleteiconloader:show",function(path) {
+	Sanato.commands.setHandler("set:resourcesapp:deleteiconloader:show",function(path) {
 		var model = ResourcesApp.resourceCollection.get(path);
 		var children = ResourcesApp.resourceCollectionView.children;
 		var childview = children.findByModel(model);
@@ -183,7 +183,7 @@ WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Mario
 		deleteButton.hide();
 		parent.append(loader);
 	});
-	WhiteDAV.commands.setHandler("set:resourcesapp:deleteiconloader:hide",function(path) {
+	Sanato.commands.setHandler("set:resourcesapp:deleteiconloader:hide",function(path) {
 		var model = ResourcesApp.resourceCollection.get(path);
 		var children = ResourcesApp.resourceCollectionView.children;
 		var childview = children.findByModel(model);

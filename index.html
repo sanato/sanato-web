@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>WhiteDAV</title>
+		<title>Sanato</title>
 		<link href="./assets/css/bootstrap.css" rel="stylesheet">
 		<link href="./assets/css/application.css" rel="stylesheet">
 		<link href="./assets/css/jquery.ui.min.css" rel="stylesheet">
@@ -14,7 +14,7 @@
 			<div id="header" class="navbar navbar-inverse navbar-fixed-top">
 				<div class="navbar-inner">
 					<div class="container">
-						<span class="navbar-brand">WhiteDAV Universal File Access</span>
+						<span class="navbar-brand">Sanato Universal File Access</span>
 						<a class="navbar-brand" href="#">
 						    <img src="assets/img/dav-icon.png" height="40px" width="40px" alt="">
 						</a>
@@ -134,72 +134,15 @@
 </script>
 
 <script type="text/javascript">
-	WhiteDAV.start();
+	Sanato.start();
 </script>
-
-
-
-<!--
-<script type="text/javascript">
-	WhiteDAV.module("Common.Views", function(Views, WhiteDAV, Backbone, Marionette, $, _) {
-		Views.LoadingView = Marionette.ItemView.extend({
-			template: "#loading-template",
-
-			ui: {
-				spinner: "#spinner"
-			},
-
-			onShow: function() {
-				var opts = {
-				  lines: 13, // The number of lines to draw
-				  length: 20, // The length of each line
-				  width: 10, // The line thickness
-				  radius: 30, // The radius of the inner circle
-				  corners: 1, // Corner roundness (0..1)
-				  rotate: 0, // The rotation offset
-				  direction: 1, // 1: clockwise, -1: counterclockwise
-				  color: '#000', // #rgb or #rrggbb or array of colors
-				  speed: 1, // Rounds per second
-				  trail: 60, // Afterglow percentage
-				  shadow: false, // Whether to render a shadow
-				  hwaccel: false, // Whether to use hardware acceleration
-				  className: 'spinner', // The CSS class to assign to the spinner
-				  zIndex: 2e9, // The z-index (defaults to 2000000000)
-				  top: '50%', // Top position relative to parent
-				  left: '50%' // Left position relative to parent
-				};
-				this.ui.spinner.spin(opts);
-			}
-		});
-	});
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <script type="text/javascript">
 
 	// FILES APP
 
 	// FILES APP MODELS
-	WhiteDAV.module("App.Files.Models", function(Models, WhiteDAV, Backbone, Marionette, $, _) {
+	Sanato.module("App.Files.Models", function(Models, Sanato, Backbone, Marionette, $, _) {
 		
 		Models.Resource = Backbone.Model.extend({
 			defaults: {
@@ -298,26 +241,26 @@
 			}
 		};
 
-		WhiteDAV.reqres.setHandler("app:files:resources", function(path) {
+		Sanato.reqres.setHandler("app:files:resources", function(path) {
 			return API.getResources(path);
 		});
 
-		WhiteDAV.reqres.setHandler("app:files:download", function(path) {
+		Sanato.reqres.setHandler("app:files:download", function(path) {
 			return API.downloadFile(path);
 		});
 
-		WhiteDAV.reqres.setHandler("app:files:remove", function(path) {
+		Sanato.reqres.setHandler("app:files:remove", function(path) {
 			return API.removeResource(path);
 		});
 
-		WhiteDAV.reqres.setHandler("app:files:createcol", function(path) {
+		Sanato.reqres.setHandler("app:files:createcol", function(path) {
 			return API.createCol(path);
 		});
 	});
 	
 
 	// FILES APP VIEWS
-	WhiteDAV.module("App.Files.Views", function(Views, WhiteDAV, Backbone, Marionette, $, _) {
+	Sanato.module("App.Files.Views", function(Views, Sanato, Backbone, Marionette, $, _) {
 		
 		Views.LayoutView  = Marionette.LayoutView.extend({
 			template: "#app-files-layout",
@@ -491,7 +434,7 @@
 				var self = this;
 				e.preventDefault();
 				if (e.keyCode === 13) {
-					var creatingCol = WhiteDAV.request("app:files:createcol", WhiteDAV.App.Files.currentPath + this.ui.newFolderInput.val());
+					var creatingCol = Sanato.request("app:files:createcol", Sanato.App.Files.currentPath + this.ui.newFolderInput.val());
 					$.when(creatingCol).done(function() {
 						self.ui.newFolderInputGroup.addClass("hidden");
 						self.ui.newFolderInput.val("");
@@ -526,7 +469,7 @@
 
 
 	// FILES APP ROUTER + CONTROLLER 
-	WhiteDAV.module("App.Files", function(Files, WhiteDAV, Backbone, Marionette, $, _) {
+	Sanato.module("App.Files", function(Files, Sanato, Backbone, Marionette, $, _) {
 
 		Files.currentPath = "/";
 		Files.Config = {
@@ -538,21 +481,21 @@
 
 		Files.Controller = {
 			listResources: function(path) {
-				var layoutView = new WhiteDAV.App.Files.Views.LayoutView();
-				var loadingView = new WhiteDAV.Common.Views.LoadingView();
+				var layoutView = new Sanato.App.Files.Views.LayoutView();
+				var loadingView = new Sanato.Common.Views.LoadingView();
 
 				path = path ? path : "/";
 
-				WhiteDAV.getRegion("app").show(layoutView);
-				layoutView.getRegion("panel").show(new WhiteDAV.App.Files.Views.PanelView());
+				Sanato.getRegion("app").show(layoutView);
+				layoutView.getRegion("panel").show(new Sanato.App.Files.Views.PanelView());
 				layoutView.getRegion("content").show(loadingView);
 				
-				var fetchingResources = WhiteDAV.request("app:files:resources", path);
+				var fetchingResources = Sanato.request("app:files:resources", path);
 				$.when(fetchingResources).done(function(resources) {
 						
 					Files.currentPath = path;
 
-					var resourcesView = new WhiteDAV.App.Files.Views.ResourceCollectionView({
+					var resourcesView = new Sanato.App.Files.Views.ResourceCollectionView({
 						collection: resources
 					});
 
@@ -563,51 +506,51 @@
 						deleteButton.hide();
 						parent.append(loader);
 						//childview.ui.deleteButton.append("<img src='assets/img/ajax-loader.gif' />")
-						var removingResource = WhiteDAV.request("app:files:remove", model.get("path"));
+						var removingResource = Sanato.request("app:files:remove", model.get("path"));
 						$.when(removingResource).done(function() {
 							model.collection.remove(model);
-							WhiteDAV.trigger("notification:show", "success", "removal succesful");
+							Sanato.trigger("notification:show", "success", "removal succesful");
 						});
 						$.when(removingResource).fail(function() {
-							WhiteDAV.trigger("notification:show", "danger", "failed removing resource " + path);
+							Sanato.trigger("notification:show", "danger", "failed removing resource " + path);
 						});
 					});
 
 					resourcesView.on("childview:app:files:list", function(childview, model) {
-						WhiteDAV.trigger("app:files:list", model.get("path"));
+						Sanato.trigger("app:files:list", model.get("path"));
 					});
 
 					resourcesView.on("childview:app:files:download", function(childview, model) {
-						WhiteDAV.trigger("app:files:download", model.get("path"));
+						Sanato.trigger("app:files:download", model.get("path"));
 					});
 
-					var breadcrumbsView = new WhiteDAV.App.Files.Breadcrumb.Views.BreadcrumbCollectionView({
-						collection: WhiteDAV.request("app:files:breadcrumb:breadcrumbs",path)
+					var breadcrumbsView = new Sanato.App.Files.Breadcrumb.Views.BreadcrumbCollectionView({
+						collection: Sanato.request("app:files:breadcrumb:breadcrumbs",path)
 					});
 
 					layoutView.getRegion("content").show(resourcesView);
 					layoutView.getRegion("breadcrumb").show(breadcrumbsView);
 					
-					WhiteDAV.navigate("resources" + path);
+					Sanato.navigate("resources" + path);
 				});
 			},
 
 			removeResource: function(path) {
-				var removingResource = WhiteDAV.request("app:files:remove", path);
+				var removingResource = Sanato.request("app:files:remove", path);
 				$.when(removingResource).done(function() {
-					WhiteDAV.trigger("notification:show", "success", "removal succesful");
+					Sanato.trigger("notification:show", "success", "removal succesful");
 				});
 				$.when(removingResource).fail(function() {
-					WhiteDAV.trigger("notification:show", "danger", "failed removing resource " + path);
+					Sanato.trigger("notification:show", "danger", "failed removing resource " + path);
 				});
 			},
 
 			downloadResource: function(path) {
-				WhiteDAV.request("app:files:download", path);
+				Sanato.request("app:files:download", path);
 			},
 
 			createCol: function(path) {
-				var creatingCol = WhiteDAV.request("app:files:createcol", path);
+				var creatingCol = Sanato.request("app:files:createcol", path);
 				$.when(creatingCol).done(function() {
 					console.log("col created in prmise");
 				});
@@ -624,24 +567,24 @@
 			}
 		});
 
-		WhiteDAV.on("app:files:list", function(path) {
-			WhiteDAV.navigate("resources" + path);
+		Sanato.on("app:files:list", function(path) {
+			Sanato.navigate("resources" + path);
 			Files.Controller.listResources(path);
 		});
 
-		WhiteDAV.on("app:files:download", function(path) {
+		Sanato.on("app:files:download", function(path) {
 			Files.Controller.downloadResource(path);
 		});	
 
-		WhiteDAV.on("app:files:remove", function(path) {
+		Sanato.on("app:files:remove", function(path) {
 			Files.Controller.removeResource(path);
 		});
 
-		WhiteDAV.on("app:files:createcol", function(path) {
+		Sanato.on("app:files:createcol", function(path) {
 			Files.Controller.createCol(path);
 		});
 
-		WhiteDAV.addInitializer(function() {
+		Sanato.addInitializer(function() {
 			new Files.Router({
 				controller: Files.Controller
 			});
@@ -680,7 +623,7 @@
 
 
 <script type="text/javascript">
-	WhiteDAV.module("App.Files.Breadcrumb.Views", function(Views, WhiteDAV, Backbone, Marionette, $, _) {
+	Sanato.module("App.Files.Breadcrumb.Views", function(Views, Sanato, Backbone, Marionette, $, _) {
 		Views.BreadcrumbView = Marionette.ItemView.extend({
 			tagName: "li",
 			template: "#app-files-breadcrumb-template",
@@ -690,7 +633,7 @@
 			onClick: function(e) {
 				e.preventDefault();
 				var path = this.model.get("path");
-				WhiteDAV.App.Files.Controller.listResources(path);			}
+				Sanato.App.Files.Controller.listResources(path);			}
 		});
 		Views.BreadcrumbCollectionView = Marionette.CollectionView.extend({
 			tagName: "ol",
@@ -699,7 +642,7 @@
 		});
 	});
 
-	WhiteDAV.module("App.Files.Breadcrumb.Models", function(Models, WhiteDAV, Backbone, Marionette, $, _) {
+	Sanato.module("App.Files.Breadcrumb.Models", function(Models, Sanato, Backbone, Marionette, $, _) {
 
 		Models.Breadcrumb = Backbone.Model.extend({
 			default: {
@@ -735,7 +678,7 @@
 			}
 		};
 
-		WhiteDAV.reqres.setHandler("app:files:breadcrumb:breadcrumbs", function(path) {
+		Sanato.reqres.setHandler("app:files:breadcrumb:breadcrumbs", function(path) {
 			return API.getBreadcrumbs(path);
 		});
 	});
@@ -762,7 +705,7 @@
 	 */
 
 
-	WhiteDAV.module("Notification.Views", function(Views, WhiteDAV, Backbone, Marionette, $, _) {
+	Sanato.module("Notification.Views", function(Views, Sanato, Backbone, Marionette, $, _) {
 		Views.NotificationView = Marionette.ItemView.extend({
 			template: "#notification-template",
 			initialize: function(opts) {
@@ -779,19 +722,19 @@
 		});
 	});
 
-	WhiteDAV.module("Notification", function(Notification, WhiteDAV, Backbone, Marionette, $, _) {
+	Sanato.module("Notification", function(Notification, Sanato, Backbone, Marionette, $, _) {
 		
 		Notification.Controller = {
 			showNotification: function(type, message) {
-				var notificationView = new WhiteDAV.Notification.Views.NotificationView({
+				var notificationView = new Sanato.Notification.Views.NotificationView({
 					type: type,
 					message: message
 				});
-				WhiteDAV.getRegion("notification").show(notificationView);
+				Sanato.getRegion("notification").show(notificationView);
 			}
 		}
 
-		WhiteDAV.on("notification:show", function(type, message) {
+		Sanato.on("notification:show", function(type, message) {
 			Notification.Controller.showNotification(type, message);
 		});
 	});
