@@ -1,0 +1,203 @@
+"use strict"
+
+WhiteDAV.module("ResourcesApp", function(ResourcesApp, WhiteDAV, Backbone, Marionette, $, _) {
+	ResourcesApp.Controller = {
+		stat: function(path) {
+			ResourcesApp.selectedCollection.reset();
+			ResourcesApp.Controller._showSelectStats();
+			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
+
+			ResourcesApp.layoutView.getRegion("grid").$el.hide();
+			ResourcesApp.layoutView.getRegion("loader").show(new WhiteDAV.Common.LoadingView());
+			var stating = WhiteDAV.request("resourcesapp:stat", path);
+			$.when(stating).done(function(data) {
+				ResourcesApp.currentPath = path;
+				ResourcesApp.resourceCollection.reset(data);
+				ResourcesApp.breadcrumbCollection.reset(WhiteDAV.request("resourcesapp:breadcrumbs", path));
+				WhiteDAV.navigate("resources" + path);
+			});
+			$.when(stating).fail(function(data) {
+				WhiteDAV.trigger("notification:show", "danger", "stating path " + path + " failed");
+			});
+			$.when(stating).always(function() {
+				ResourcesApp.layoutView.getRegion("loader").empty();
+				ResourcesApp.layoutView.getRegion("grid").$el.show();	
+			});
+		},
+		download: function(path) {
+			WhiteDAV.request("resourcesapp:download", path);
+		},
+		remove: function(path) {
+			WhiteDAV.execute("set:resourcesapp:deleteiconloader:show", path);
+			var removing = WhiteDAV.request("resourcesapp:remove", path);
+			$.when(removing).done(function() {
+				ResourcesApp.resourceCollection.remove(ResourcesApp.resourceCollection.get(path));
+				ResourcesApp.resourceCollectionView.ui.selectStats.text("Selected " + ResourcesApp.selectedCollection.length + " items");
+				if (ResourcesApp.selectedCollection.length === 0) {
+					ResourcesApp.resourceCollectionView.ui.selectStats.text("");
+					ResourcesApp.resourceCollectionView.ui.selectStats.addClass("hidden");
+					ResourcesApp.resourceCollectionView.ui.resourceName.removeClass("hidden");
+					ResourcesApp.resourceCollectionView.ui.tableHeader.removeClass("grey");
+				}
+			});
+			$.when(removing).fail(function() {
+				console.log("fail remove");
+			});
+		},
+		mkcol: function(path) {
+			var mkcoling = WhiteDAV.request("resourcesapp:mkcol", path);
+			var view = ResourcesApp.panelView;
+			view.ui.newButton.toggleClass("disabled");
+			var loader = "<img class='loader' src='assets/img/ajax-loader.gif' />";
+			view.$el.append(loader);
+			$.when(mkcoling).done(function(data) {
+				var model = ResourcesApp.resourceCollection.add(data);
+				var view = ResourcesApp.resourceCollectionView.children.findByModel(model);
+				view.$el.toggleClass("warning");
+				view.$el.fadeOut(function() {
+					view.$el.fadeIn();
+					view.$el.toggleClass("warning");
+				});
+			});
+			$.when(mkcoling).always(function() {
+				view.ui.newButton.toggleClass("disabled");
+				view.$el.find(".loader").remove();
+			});
+		},
+		rename: function(from, to) {
+			var model = ResourcesApp.resourceCollection.get(from);
+			var children = ResourcesApp.resourceCollectionView.children;
+			var childview = children.findByModel(model);
+			childview.ui.iconButton.addClass("hidden");
+			childview.ui.iconLoader.removeClass("hidden");
+
+			var renaming = WhiteDAV.request("resourcesapp:rename", from, to);
+			$.when(renaming).done(function() {
+				console.log("rename done");
+				ResourcesApp.resourceCollection.remove(ResourcesApp.resourceCollection.get(from));
+				ResourcesApp.resourceCollectionView.ui.selectStats.text("Selected " + ResourcesApp.selectedCollection.length + " items");
+				if (ResourcesApp.selectedCollection.length === 0) {
+					ResourcesApp.resourceCollectionView.ui.selectStats.text("");
+					ResourcesApp.resourceCollectionView.ui.selectStats.addClass("hidden");
+					ResourcesApp.resourceCollectionView.ui.resourceName.removeClass("hidden");
+					ResourcesApp.resourceCollectionView.ui.tableHeader.removeClass("grey");
+				}
+				
+			});
+			$.when(renaming).fail(function() {
+				childview.ui.iconButton.removeClass("hidden");
+				childview.ui.iconLoader.addClass("hidden");
+				console.log("renaming failed");
+			});
+		},
+		select: function(path) {
+			var model = ResourcesApp.resourceCollection.get(path);
+			var children = ResourcesApp.resourceCollectionView.children;
+			var childview = children.findByModel(model);
+			childview.$el.addClass("danger");
+			childview.ui.checkbox.prop("checked", true);
+			ResourcesApp.selectedCollection.add(model);
+			if (ResourcesApp.resourceCollection.length === ResourcesApp.selectedCollection.length) {
+				ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", true);
+			}
+			ResourcesApp.Controller._showSelectStats();
+			
+		},
+		unselect: function(path) {
+			var model = ResourcesApp.resourceCollection.get(path);
+			var children = ResourcesApp.resourceCollectionView.children;
+			var childview = children.findByModel(model);
+			childview.$el.removeClass("danger");
+			childview.ui.checkbox.prop("checked", false);
+			ResourcesApp.selectedCollection.remove(model);
+			ResourcesApp.resourceCollectionView.ui.selectStats.text("Selected " + ResourcesApp.selectedCollection.length + " items");
+			if (ResourcesApp.resourceCollection.length > ResourcesApp.selectedCollection.length) {
+				ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
+			}
+			ResourcesApp.Controller._showSelectStats();
+		},
+		selectAll: function() {
+			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", true);
+			ResourcesApp.resourceCollectionView.ui.deleteAll.removeClass("hidden");
+			ResourcesApp.resourceCollection.forEach(function(model){
+				WhiteDAV.trigger("resourcesapp:select", model.get("path"));
+			});
+		},
+		unselectAll: function() {
+			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
+			ResourcesApp.resourceCollectionView.ui.deleteAll.addClass("hidden");
+			ResourcesApp.resourceCollection.forEach(function(model){
+				WhiteDAV.trigger("resourcesapp:unselect", model.get("path"));
+			});
+		},
+		_showSelectStats: function() {
+			if (ResourcesApp.selectedCollection.length === 0) {
+				ResourcesApp.resourceCollectionView.ui.selectStats.text("");
+				ResourcesApp.resourceCollectionView.ui.selectStats.addClass("hidden");
+				ResourcesApp.resourceCollectionView.ui.resourceName.removeClass("hidden");
+				ResourcesApp.resourceCollectionView.ui.tableHeader.removeClass("grey");
+			} else {
+				ResourcesApp.resourceCollectionView.ui.selectStats.text("Selected " + ResourcesApp.selectedCollection.length + " items");
+				ResourcesApp.resourceCollectionView.ui.selectStats.removeClass("hidden");
+				ResourcesApp.resourceCollectionView.ui.resourceName.addClass("hidden");
+				ResourcesApp.resourceCollectionView.ui.tableHeader.addClass("grey");
+			}
+		}
+	};
+
+	WhiteDAV.on("resourcesapp:stat", function(path) {
+		return ResourcesApp.Controller.stat(path);
+	});
+	WhiteDAV.on("resourcesapp:download", function(path) {
+		return ResourcesApp.Controller.download(path);
+	});
+	WhiteDAV.on("resourcesapp:remove", function(path) {
+		return ResourcesApp.Controller.remove(path);
+	});
+	WhiteDAV.on("resourcesapp:mkcol", function(path) {
+		return ResourcesApp.Controller.mkcol(path);
+	});
+	WhiteDAV.on("resourcesapp:rename", function(from, to) {
+		return ResourcesApp.Controller.rename(from, to);
+	});
+	WhiteDAV.on("resourcesapp:select", function(path) {
+		return ResourcesApp.Controller.select(path);
+	});
+	WhiteDAV.on("resourcesapp:unselect", function(path) {
+		return ResourcesApp.Controller.unselect(path);
+	});
+	WhiteDAV.on("resourcesapp:selectall", function(path) {
+		return ResourcesApp.Controller.selectAll(path);
+	});
+	WhiteDAV.on("resourcesapp:unselectall", function(path) {
+		return ResourcesApp.Controller.unselectAll(path);
+	});
+
+	WhiteDAV.commands.setHandler("set:resourcesapp:deleteiconloader:show",function(path) {
+		var model = ResourcesApp.resourceCollection.get(path);
+		var children = ResourcesApp.resourceCollectionView.children;
+		var childview = children.findByModel(model);
+		var deleteButton = childview.ui.deleteButton
+		var loader = "<img id='delete-loading-icon' src='assets/img/ajax-loader.gif' />";
+		var parent = deleteButton.parent();
+		deleteButton.hide();
+		parent.append(loader);
+	});
+	WhiteDAV.commands.setHandler("set:resourcesapp:deleteiconloader:hide",function(path) {
+		var model = ResourcesApp.resourceCollection.get(path);
+		var children = ResourcesApp.resourceCollectionView.children;
+		var childview = children.findByModel(model);
+		var deleteButton = childview.ui.deleteButton;
+		var parent = deleteButton.parent();
+		deleteButton.show();
+		console.log(parent);
+		parent.find("#delete-loading-icon").remove();
+	});
+
+	ResourcesApp.on("start", function() {
+		ResourcesApp.resourceCollection.on("remove", function(model) {
+			ResourcesApp.selectedCollection.remove(model);
+		});
+	});
+	
+});

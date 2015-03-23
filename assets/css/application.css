@@ -1,0 +1,27 @@
+body{
+	/* 60px to move the container down and
+	* make room for the navigation bar */
+	padding-top: 60px;
+}
+tr {
+	height: 60px;
+}
+
+.table tbody>tr>td.vert-align{
+    vertical-align: middle;
+}
+.table p {
+	font-weight: bold;
+}
+.table {
+	margin-top: 30px;
+}
+.table td input {
+	cursor: pointer;
+}
+.glyphicon-trash {
+	color: red;
+}
+.grey {
+	background-color: darksalmon;
+}
