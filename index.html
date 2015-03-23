@@ -174,7 +174,7 @@
 						async: true,
 						dataType: 'json',
 						beforeSend: function (xhr) {
-							xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('bstoken'));
+							xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
 						},
 						success: function(data) {
 							data = data.children? data.children : [];
@@ -191,7 +191,7 @@
 			},
 
 			downloadFile: function(path) {
-				var getURL = '/api/v1/core/apps/files/get_file' + path + '?token=' + localStorage.getItem("bstoken");
+				var getURL = '/api/v1/core/apps/files/get_file' + path + '?token=' + localStorage.getItem("sanato_token");
 				window.location.href = getURL;
 			},
 
@@ -205,7 +205,7 @@
 						async: true,
 						dataType: 'json',
 						beforeSend: function (xhr) {
-							xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('bstoken'));
+							xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
 						},
 						success: function(data) {
 							console.log("data obtained");
@@ -228,7 +228,7 @@
 					type: 'POST',
 					async: true,
 					beforeSend: function (xhr) {
-						xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('bstoken'));
+						xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
 					},
 					success: function(data) {
 						defer.resolve();

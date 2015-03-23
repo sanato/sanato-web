@@ -29,12 +29,12 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		stat: function(path) {
 			var defer = $.Deferred();
 			$.ajax({
-				url: "http://localhost:3000/api/v1/core/apps/files/stat" + path + "?children=true",
+				url: Sanato.config.baseURL + "files_stat" + path + "?children=true",
 				type: 'GET',
 				async: true,
 				dataType: 'json',
 				beforeSend: function (xhr) {
-					xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('bstoken'));
+					xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
 				},
 				success: function(data) {
 					data = data.children? data.children : [];
@@ -47,18 +47,18 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			return defer.promise();
 		},
 		download: function(path) {
-			var getURL = '/api/v1/core/apps/files/get_file' + path + '?token=' + localStorage.getItem("bstoken");
+			var getURL = Sanato.config.baseURL + "files_get" + path + "?token=" + localStorage.getItem("sanato_token");
 			window.location.href = getURL;
 		},
 		remove: function(path) {
 			var defer = $.Deferred();
 			setTimeout(function(){
 				$.ajax({
-					url: "http://localhost:3000/api/v1/core/apps/files/remove" + path,
+					url: Sanato.config.baseURL + "files_delete" + path,
 					type: 'POST',
 					async: true,
 					beforeSend: function (xhr) {
-						xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('bstoken'));
+						xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
 					},
 					success: function(data) {
 						defer.resolve();
@@ -73,12 +73,12 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		mkcol: function(path) {
 			var defer = $.Deferred();
 			$.ajax({
-				url: "http://localhost:3000/api/v1/core/apps/files/create_col" + path,
+				url: Sanato.config.baseURL + "files_mkcol" + path,
 				type: 'POST',
 				async: true,
 				dataType: "json",
 				beforeSend: function (xhr) {
-					xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('bstoken'));
+					xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
 				},
 				success: function(data) {
 					defer.resolve(data);
@@ -90,15 +90,14 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			return defer.promise();
 		},
 		rename: function(from , to) {
-			console.log("renameeeed");
 			var defer = $.Deferred();
 			setTimeout(function() {
 				$.ajax({
-					url: "http://localhost:3000/api/v1/core/apps/files/rename?from=" + from + "&to=" + to,
+					url: Sanato.config.baseURL + "files_rename?from=" + from + "&to=" + to,
 					type: 'POST',
 					async: true,
 					beforeSend: function (xhr) {
-						xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('bstoken'));
+						xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
 					},
 					success: function(data) {
 						defer.resolve();
