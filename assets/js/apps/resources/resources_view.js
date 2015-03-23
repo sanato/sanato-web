@@ -2,7 +2,7 @@
 
 Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionette, $, _) {
 	ResourcesApp.LayoutView = Marionette.LayoutView.extend({
-		template: "#resources-app-layout-template",
+		template: "#resources-app-template",
 		regions: {
 			breadcrumb: "#breadcrumb",
 			panel: "#panel",

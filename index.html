@@ -11,19 +11,6 @@
 	</head>
 	<body>
 		<div id="main">
-			<div id="header" class="navbar navbar-inverse navbar-fixed-top">
-				<div class="navbar-inner">
-					<div class="container">
-						<span class="navbar-brand">Sanato Universal File Access</span>
-						<a class="navbar-brand" href="#">
-						    <img src="assets/img/dav-icon.png" height="40px" width="40px" alt="">
-						</a>
-					</div>
-				</div>
-			</div>
-			<div id="notification" class="container"></div>
-			<div id="app" class="container"></div>
-			<div id="footer"></div>
 		</div>
 			
 		<script src="./assets/js/vendor/jquery.js"></script>
@@ -37,37 +24,65 @@
 		<script src="./assets/js/vendor/jquery.spin.js"></script>
 
 		<script src="./assets/js/app.js"></script>
-
-		<script src="./assets/js/common/views.js"></script>
-
+		<script src="./assets/js/apps/intro/intro.js"></script>
+		<script src="./assets/js/apps/login/login.js"></script>
+		<script src="./assets/js/apps/container/container.js"></script>
 		<script src="./assets/js/apps/resources/resources.js"></script>
 		<script src="./assets/js/apps/resources/resources_controller.js"></script>
 		<script src="./assets/js/apps/resources/resources_model.js"></script>
 		<script src="./assets/js/apps/resources/resources_view.js"></script>
-
-		<script src="./assets/js/apps/intro/intro.js"></script>
 	</body>
 </html>
 
+<script type="text/template" id="container-app-template">
+	<div id="header"></div>
+	<div id="notification"></div>
+	<div id="app"></div>
+	<div id="footer"></div>
+</script>
+
+<script type="text/template" id="header-app-template">
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<span class="navbar-brand">Sanato Universal File Access</span>
+				<a class="navbar-brand" href="#">
+				</a>
+			</div>
+		</div>
+	</div>
+</script>
+
+<script type="text/template" id="notification-app-template">
+	<div class="container">
+		<p>Notification app template</p>
+		<div class="alert alert-<%= type %>"><p class="text-center"><%= message %></p></div>
+	</div>
+</script>
+
+<script type="text/template" id="footer-app-template">
+	<div class="container">
+		<p>Footer app template</p>
+	</div>
+</script>
+
 <script type="text/template" id="intro-app-template">
-	<h1>Intro loading ... cool loader here :) </h1>
+	<h1>Please wait, loading ...</h1>
 </script>
 
-<script type="text/template" id="notification-template">
-	<div class="alert alert-<%= type %>"><p class="text-center"><%= message %></p></div>
+<script type="text/template" id="login-app-template">
+	<form>	
+		Username <input type="text" />
+		Password <input type="Password" />
+		<input type="submit" />
+	</form>
 </script>
 
-<script type="text/template" id="common-loading-template">
-	<div class="hidden" id="spinner"></div> 
-</script>
-
-
-<script type="text/template" id="resources-app-layout-template">
+<script type="text/template" id="resources-app-template">
 	<section>
 		<div id="breadcrumb"></div>
 		<div id="panel"></div>
 		<div id="grid"></div>
-		<div id="loader"></div>
 	</section>
 </script>
 
@@ -136,630 +151,3 @@
 <script type="text/javascript">
 	Sanato.start();
 </script>
-
-<script type="text/javascript">
-
-	// FILES APP
-
-	// FILES APP MODELS
-	Sanato.module("App.Files.Models", function(Models, Sanato, Backbone, Marionette, $, _) {
-		
-		Models.Resource = Backbone.Model.extend({
-			defaults: {
-				id: "",
-				path: "",
-				isCol: true,
-				size: 0,
-				mimeType: "application/octet-stream",
-				etag: "",
-				modified: 0
-			}
-		});
-
-		Models.ResourceCollection = Backbone.Collection.extend({
-			model: Models.Resource,
-			comparator: "size"
-		});
-
-		var API = {
-			getResources: function(path) {
-
-				var defer = $.Deferred();
-				var resources = new Models.ResourceCollection();
-
-				setTimeout(function() {
-					$.ajax({
-						url: "http://localhost:3000/api/v1/core/apps/files/stat" + path + "?children=" + true,
-						type: 'GET',
-						async: true,
-						dataType: 'json',
-						beforeSend: function (xhr) {
-							xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
-						},
-						success: function(data) {
-							data = data.children? data.children : [];
-							resources.reset(data);
-							defer.resolve(resources);
-						},
-						error: function() {
-							defer.reject();
-						}
-					});
-				}, 0);
-				
-				return defer.promise();
-			},
-
-			downloadFile: function(path) {
-				var getURL = '/api/v1/core/apps/files/get_file' + path + '?token=' + localStorage.getItem("sanato_token");
-				window.location.href = getURL;
-			},
-
-			removeResource: function(path) {
-				console.log("removing path: ", path);
-				var defer = $.Deferred();
-				setTimeout(function() {
-					$.ajax({
-						url: "http://localhost:3000/api/v1/core/apps/files/remove" + path,
-						type: 'POST',
-						async: true,
-						dataType: 'json',
-						beforeSend: function (xhr) {
-							xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
-						},
-						success: function(data) {
-							console.log("data obtained");
-							defer.resolve();
-						},
-						error: function() {
-							defer.reject();
-						}
-					});
-				}, 0);
-				
-				return defer.promise();
-			},
-
-			createCol: function(path) {
-				console.log("creating col at path: ", path);
-				var defer = $.Deferred();
-				$.ajax({
-					url: "http://localhost:3000/api/v1/core/apps/files/create_col" + path,
-					type: 'POST',
-					async: true,
-					beforeSend: function (xhr) {
-						xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
-					},
-					success: function(data) {
-						defer.resolve();
-					},
-					error: function() {
-						defer.reject();
-					}
-				});
-				return defer.promise();
-			}
-		};
-
-		Sanato.reqres.setHandler("app:files:resources", function(path) {
-			return API.getResources(path);
-		});
-
-		Sanato.reqres.setHandler("app:files:download", function(path) {
-			return API.downloadFile(path);
-		});
-
-		Sanato.reqres.setHandler("app:files:remove", function(path) {
-			return API.removeResource(path);
-		});
-
-		Sanato.reqres.setHandler("app:files:createcol", function(path) {
-			return API.createCol(path);
-		});
-	});
-	
-
-	// FILES APP VIEWS
-	Sanato.module("App.Files.Views", function(Views, Sanato, Backbone, Marionette, $, _) {
-		
-		Views.LayoutView  = Marionette.LayoutView.extend({
-			template: "#app-files-layout",
-			regions: {
-				panel: "#panel",
-				breadcrumb: "#breadcrumb",
-				content: "#content"
-			}
-		});
-
-		Views.ResourceView = Marionette.ItemView.extend({
-			tagName: "tr",
-			template: "#app-files-resource-template",
-			remove: function() {
-				var self = this;
-				this.$el.fadeOut(function() {
-					Marionette.ItemView.prototype.remove.call(self);
-				});
-			},
-
-			ui: {
-				deleteButton: "span.js-delete",
-				renameButton: "span.js-rename",
-				showButton: "span.js-show",
-				downloadButton: "span.js-download",
-				versionsButton: "span.js-versions",
-				iconButton: "img.mime-icon",
-				pathButton: ".js-clipboard",
-			},
-
-			events: {
-				"mouseover": "highlight",
-				"mouseout": "highlight",
-				"click @ui.deleteButton": "onDeleteButtonClick",
-				"click @ui.showButton": "onShowButtonClick",
-				"click @ui.downloadButton": "onDownloadButtonClick",
-				"click @ui.iconButton": "onIconButtonClick",
-				"dblclick @ui.pathButton": "onPathButtonDblclick"
-			},
-
-			templateHelpers: {
-				basePath: function(path) {
-					return path.split("/").pop();
-				},
-				timeSince: function(date) {
-					date = date * 1000;
-				    var seconds = Math.floor((new Date() - date) / 1000);
-				    var interval = Math.floor(seconds / 31536000);
-
-				    if (interval > 1) {
-				        return interval + " years ago";
-				    }
-				    interval = Math.floor(seconds / 2592000);
-				    if (interval > 1) {
-				        return interval + " months ago";
-				    }
-				    interval = Math.floor(seconds / 86400);
-				    if (interval > 1) {
-				        return interval + " days ago";
-				    }
-				    interval = Math.floor(seconds / 3600);
-				    if (interval > 1) {
-				        return interval + " hours ago";
-				    }
-				    interval = Math.floor(seconds / 60);
-				    if (interval > 1) {
-				        return interval + " minutes ago";
-				    }
-				    return Math.floor(seconds) + " seconds ago";
-				},
-
-				humanFileSize: function(bytes, si) {
-				    var thresh = si ? 1000 : 1024;
-				    if(bytes < thresh) return bytes + ' B';
-				    var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
-				    var u = -1;
-				    do {
-				        bytes /= thresh;
-				        ++u;
-				    } while(bytes >= thresh);
-				    return bytes.toFixed(1)+' '+units[u];
-				}
-			},
-
-			highlight: function(e) {
-				this.$el.toggleClass("success");
-				this.ui.deleteButton.toggleClass("hidden");
-				if (!this.model.get("isCol")) {
-					this.ui.versionsButton.toggleClass("hidden");
-					this.ui.downloadButton.toggleClass("hidden");
-					this.ui.showButton.toggleClass("hidden");
-				}
-			},
-
-			onDeleteButtonClick: function(e) {
-				e.preventDefault();
-				this.trigger("app:files:remove", this.model);
-			},
-			
-
-			onDownloadButtonClick: function(e) {
-				e.preventDefault();
-				this.trigger("app:files:download", this.model);
-			},
-
-			onIconButtonClick: function(e) {
-				e.preventDefault();
-				if (this.model.get("isCol")) {
-					this.trigger("app:files:list", this.model);
-				} else {
-					this.trigger("app:files:download", this.model);
-				}
-			},
-			onPathButtonDblclick: function(e) {
-				e.preventDefault();
-				alert(this.model.get("path"));
-			}
-		});
-
-		Views.ResourceCollectionEmptyView = Marionette.ItemView.extend({
-			template: "#app-files-resources-empty"
-		});
-
-		Views.ResourceCollectionView = Marionette.CompositeView.extend({
-			tagName: "div",
-			template: "#app-files-resource-collection-template",
-			childViewContainer: "tbody",
-			childView: Views.ResourceView,
-			emptyView: Views.ResourceCollectionEmptyView,
-			onChildviewAppFilesDelete: function() {
-				/*this.$el.fadeOut(250, function() {
-					$(this).fadeIn(250);
-				});
-				*/
-			},
-		});
-
-		Views.PanelView = Marionette.ItemView.extend({
-			template: "#app-files-panel-template",
-			tagName: "div",
-			ui: {
-				"newButton": "#new-button",
-				"newFolderButton": "#new-folder",
-				"newFileButton": "#new-file",
-				"newFileInputGroup": "#new-file-input-group",
-				"newFolderInputGroup": "#new-folder-input-group",
-				"newFolderInput": "#new-folder-input",
-				"newFileInput": "#new-file-input",
-			},
-			events: {
-				"click @ui.newButton": "onNewButtonClick",
-				"click @ui.newFolderButton": "onNewFolderButtonClick",
-				"keyup @ui.newFolderInput": "onNewFolderInputKeyup",
-				"click @ui.newFileButton": "onNewFileButtonClick",
-				"keyup @ui.newFileInput": "onNewFileInputKeyup"
-			},
-
-			onNewButtonClick: function(e) {
-				e.preventDefault();
-				this.ui.newFolderInputGroup.addClass("hidden");
-				this.ui.newFolderInput.val("");
-				this.ui.newFileInputGroup.addClass("hidden");
-				this.ui.newFileInput.val("");
-			},
-			onNewFolderButtonClick: function(e) {
-				e.preventDefault();
-				this.ui.newFolderInputGroup.toggleClass("hidden");
-				this.ui.newFolderInput.focus();
-			},
-			onNewFolderInputKeyup: function(e) {
-				var self = this;
-				e.preventDefault();
-				if (e.keyCode === 13) {
-					var creatingCol = Sanato.request("app:files:createcol", Sanato.App.Files.currentPath + this.ui.newFolderInput.val());
-					$.when(creatingCol).done(function() {
-						self.ui.newFolderInputGroup.addClass("hidden");
-						self.ui.newFolderInput.val("");
-						console.log(self);
-						self.model.collection.add(self.model);
-						console.log(self);
-					});
-					$.when(creatingCol).fail(function() {
-						console.log("Failed to create col");
-					});
-				} else if (e.keyCode === 27) {
-					this.ui.newFolderInputGroup.toggleClass("hidden");
-					this.ui.newFolderInput.val("");
-				}
-			},
-			onNewFileButtonClick: function(e) {
-				e.preventDefault();
-				this.ui.newFileInputGroup.toggleClass("hidden");
-				this.ui.newFileInput.focus();
-			},
-			onNewFileInputKeyup: function(e) {
-				if (e.keyCode === 13) {
-					alert("folder created");
-				} else if (e.keyCode === 27) {
-					this.ui.newFileInputGroup.toggleClass("hidden");
-					this.ui.newFileInput.val("");
-				}
-			}
-		});
-
-	});
-
-
-	// FILES APP ROUTER + CONTROLLER 
-	Sanato.module("App.Files", function(Files, Sanato, Backbone, Marionette, $, _) {
-
-		Files.currentPath = "/";
-		Files.Config = {
-			appURL: "http://localhost:3000/api/v1/core/apps/files"
-		};
-
-		// we define layout here to not re-render the breadcrumbs after listing resources
-		
-
-		Files.Controller = {
-			listResources: function(path) {
-				var layoutView = new Sanato.App.Files.Views.LayoutView();
-				var loadingView = new Sanato.Common.Views.LoadingView();
-
-				path = path ? path : "/";
-
-				Sanato.getRegion("app").show(layoutView);
-				layoutView.getRegion("panel").show(new Sanato.App.Files.Views.PanelView());
-				layoutView.getRegion("content").show(loadingView);
-				
-				var fetchingResources = Sanato.request("app:files:resources", path);
-				$.when(fetchingResources).done(function(resources) {
-						
-					Files.currentPath = path;
-
-					var resourcesView = new Sanato.App.Files.Views.ResourceCollectionView({
-						collection: resources
-					});
-
-					resourcesView.on("childview:app:files:remove", function(childview, model) {
-						var deleteButton = childview.ui.deleteButton
-						var loader = "<img src='assets/img/ajax-loader.gif' />";
-						var parent = deleteButton.parent();
-						deleteButton.hide();
-						parent.append(loader);
-						//childview.ui.deleteButton.append("<img src='assets/img/ajax-loader.gif' />")
-						var removingResource = Sanato.request("app:files:remove", model.get("path"));
-						$.when(removingResource).done(function() {
-							model.collection.remove(model);
-							Sanato.trigger("notification:show", "success", "removal succesful");
-						});
-						$.when(removingResource).fail(function() {
-							Sanato.trigger("notification:show", "danger", "failed removing resource " + path);
-						});
-					});
-
-					resourcesView.on("childview:app:files:list", function(childview, model) {
-						Sanato.trigger("app:files:list", model.get("path"));
-					});
-
-					resourcesView.on("childview:app:files:download", function(childview, model) {
-						Sanato.trigger("app:files:download", model.get("path"));
-					});
-
-					var breadcrumbsView = new Sanato.App.Files.Breadcrumb.Views.BreadcrumbCollectionView({
-						collection: Sanato.request("app:files:breadcrumb:breadcrumbs",path)
-					});
-
-					layoutView.getRegion("content").show(resourcesView);
-					layoutView.getRegion("breadcrumb").show(breadcrumbsView);
-					
-					Sanato.navigate("resources" + path);
-				});
-			},
-
-			removeResource: function(path) {
-				var removingResource = Sanato.request("app:files:remove", path);
-				$.when(removingResource).done(function() {
-					Sanato.trigger("notification:show", "success", "removal succesful");
-				});
-				$.when(removingResource).fail(function() {
-					Sanato.trigger("notification:show", "danger", "failed removing resource " + path);
-				});
-			},
-
-			downloadResource: function(path) {
-				Sanato.request("app:files:download", path);
-			},
-
-			createCol: function(path) {
-				var creatingCol = Sanato.request("app:files:createcol", path);
-				$.when(creatingCol).done(function() {
-					console.log("col created in prmise");
-				});
-				$.when(creatingCol).fail(function() {
-					console.log("creating col failed");
-				});
-			}
-		};
-
-
-		Files.Router = Marionette.AppRouter.extend({
-			appRoutes: {
-				"resources*path": "listResources",
-			}
-		});
-
-		Sanato.on("app:files:list", function(path) {
-			Sanato.navigate("resources" + path);
-			Files.Controller.listResources(path);
-		});
-
-		Sanato.on("app:files:download", function(path) {
-			Files.Controller.downloadResource(path);
-		});	
-
-		Sanato.on("app:files:remove", function(path) {
-			Files.Controller.removeResource(path);
-		});
-
-		Sanato.on("app:files:createcol", function(path) {
-			Files.Controller.createCol(path);
-		});
-
-		Sanato.addInitializer(function() {
-			new Files.Router({
-				controller: Files.Controller
-			});
-		});
-
-	});
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript">
-	Sanato.module("App.Files.Breadcrumb.Views", function(Views, Sanato, Backbone, Marionette, $, _) {
-		Views.BreadcrumbView = Marionette.ItemView.extend({
-			tagName: "li",
-			template: "#app-files-breadcrumb-template",
-			events: {
-				"click" : "onClick"
-			},
-			onClick: function(e) {
-				e.preventDefault();
-				var path = this.model.get("path");
-				Sanato.App.Files.Controller.listResources(path);			}
-		});
-		Views.BreadcrumbCollectionView = Marionette.CollectionView.extend({
-			tagName: "ol",
-			className: "breadcrumb",
-			childView: Views.BreadcrumbView
-		});
-	});
-
-	Sanato.module("App.Files.Breadcrumb.Models", function(Models, Sanato, Backbone, Marionette, $, _) {
-
-		Models.Breadcrumb = Backbone.Model.extend({
-			default: {
-				path: "",
-				name: ""
-			}
-		});
-		Models.BreadcrumbCollection = Backbone.Collection.extend({
-			model: Models.Breadcrumb
-		});
-
-		var API = {
-			getBreadcrumbs: function(path) {
-				var current = path || "/";
-				var parts = current.split('/');
-				parts.shift();
-				var previousPath = "";
-				var breadcrumbCollection = new Models.BreadcrumbCollection();
-				breadcrumbCollection.add({
-					name: "Home",
-					path: "/"
-				});
-				for(i = 0; i < parts.length; i++ ) {
-					var newPath = previousPath + '/' + parts[i];
-					var name = parts[i];
-					breadcrumbCollection.add({
-						path: newPath,
-						name: name
-					});
-					previousPath = newPath;
-				}
-				return breadcrumbCollection;
-			}
-		};
-
-		Sanato.reqres.setHandler("app:files:breadcrumb:breadcrumbs", function(path) {
-			return API.getBreadcrumbs(path);
-		});
-	});
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script type="text/javascript">
-	/*
-	 * NOTIFICATIONS APP 
-	 */
-
-
-	Sanato.module("Notification.Views", function(Views, Sanato, Backbone, Marionette, $, _) {
-		Views.NotificationView = Marionette.ItemView.extend({
-			template: "#notification-template",
-			initialize: function(opts) {
-				opts = opts || {};
-				this.type = opts.type;
-				this.message = opts.message
-			},
-			serializeData: function() {
-				return {
-					type: this.type,
-					message: this.message
-				};
-			}
-		});
-	});
-
-	Sanato.module("Notification", function(Notification, Sanato, Backbone, Marionette, $, _) {
-		
-		Notification.Controller = {
-			showNotification: function(type, message) {
-				var notificationView = new Sanato.Notification.Views.NotificationView({
-					type: type,
-					message: message
-				});
-				Sanato.getRegion("notification").show(notificationView);
-			}
-		}
-
-		Sanato.on("notification:show", function(type, message) {
-			Notification.Controller.showNotification(type, message);
-		});
-	});
-
-	
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--->
-

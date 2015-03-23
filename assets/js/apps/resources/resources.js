@@ -25,7 +25,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 
 		ResourcesApp.panelView = new ResourcesApp.PanelView();
 
-		Sanato.getRegion("app").show(ResourcesApp.layoutView);
+		Sanato.ContainerApp.layoutView.getRegion("app").show(ResourcesApp.layoutView);
 
 		ResourcesApp.layoutView.getRegion("breadcrumb").show(ResourcesApp.breadcrumbCollectionView);
 		ResourcesApp.layoutView.getRegion("panel").show(ResourcesApp.panelView);
@@ -40,10 +40,5 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		});
 
 		Sanato.trigger("resourcesapp:stat", ResourcesApp.currentPath);
-		
-		// create layout view and display it
-		// initialize resources to zero
-		// create list of resources and display list
-		// url to resources
 	});
 });
