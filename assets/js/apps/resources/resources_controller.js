@@ -8,7 +8,6 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
 
 			ResourcesApp.layoutView.getRegion("grid").$el.hide();
-			ResourcesApp.layoutView.getRegion("loader").show(new Sanato.Common.LoadingView());
 			var stating = Sanato.request("resourcesapp:stat", path);
 			$.when(stating).done(function(data) {
 				ResourcesApp.currentPath = path;
@@ -20,7 +19,6 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 				Sanato.trigger("notification:show", "danger", "stating path " + path + " failed");
 			});
 			$.when(stating).always(function() {
-				ResourcesApp.layoutView.getRegion("loader").empty();
 				ResourcesApp.layoutView.getRegion("grid").$el.show();	
 			});
 		},

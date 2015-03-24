@@ -2,6 +2,8 @@
 
 Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionette, $, _) {
 	ResourcesApp.LayoutView = Marionette.LayoutView.extend({
+		tagName: "div",
+		className: "container",
 		template: "#resources-app-template",
 		regions: {
 			breadcrumb: "#breadcrumb",
@@ -293,6 +295,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 
 		onNewButtonClick: function(e) {
 			e.preventDefault();
+			console.log(e);
 			this.ui.newFolderInputGroup.addClass("hidden");
 			this.ui.newFolderInput.val("");
 			this.ui.newFileInputGroup.addClass("hidden");
