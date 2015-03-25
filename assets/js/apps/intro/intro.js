@@ -11,6 +11,14 @@ Sanato.module("IntroApp", function(IntroApp, Sanato, Backbone, Marionette, $, _)
 
 
 		Sanato.getRegion("main").show(new IntroApp.View);
+		setTimeout(function() {
+			if(localStorage.getItem("sanato_token")) {
+				Sanato.ContainerApp.start();
+				Sanato.ResourcesApp.start();
+			} else {
+				Sanato.LoginApp.start();
+			}
+		}, 1500);
 
 		// logic to check if the user is logged or not
 		// if user is loged then start resources app else start login app
