@@ -33,6 +33,7 @@ Sanato.on("start", function() {
 			//Sanato.trigger("resourcesapp:stat", "/");
 		}
 	}
+	Sanato.IntroApp.start();
 });
 
 $(document).ajaxError(function( event, jqxhr, settings, thrownError ) {
