@@ -38,6 +38,6 @@ Sanato.on("start", function() {
 
 $(document).ajaxError(function( event, jqxhr, settings, thrownError ) {
 	if(jqxhr.status === 401) {
-		alert("you are not authenticated");
+		Sanato.HeaderApp.Controller.logout();
 	}
 });
