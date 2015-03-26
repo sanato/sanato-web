@@ -25,3 +25,15 @@ tr {
 .grey {
 	background-color: darksalmon;
 }
+.dropdown-menu i {
+	margin-right: 10px;
+}
+.dropdown-toggle {
+	margin-right: 10px;
+}
+#new-file-input-group {
+	width: 200px;
+}
+#new-folder-input-group {
+	width: 200px;
+}
