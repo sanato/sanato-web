@@ -25,7 +25,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 				opacity: 0.50,
 				helper: function() {
 					if (ResourcesApp.selectedCollection.length === 0) {
-						var src = view.$el.find(".mime-icon").attr("src");
+						var src = view.$el.find(".js-mime-icon").attr("src");
 						var el = "<div><img src=" + src + " height='50px' width='50px'/><p>" + view.model.get("path").split("/").pop() + "</p><span class='hidden'>" + view.model.get("path") + "</span></div>";
 						return el;
 					} else {
@@ -60,7 +60,6 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 								var el = $(ui.helper);
 								var from = el.find("span").text();
 								Sanato.trigger("resourcesapp:rename", from, view.model.get("path") + "/" +  from.split("/").pop());
-								//view.$el.removeClass("info");
 							}
 						} else {
 							ResourcesApp.selectedCollection.forEach(function(model) {
@@ -82,22 +81,22 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			}
 		},
 		ui: {
-			deleteButton: "span.js-delete",
-			renameButton: "span.js-rename",
-			showButton: "span.js-show",
-			downloadButton: "span.js-download",
-			versionsButton: "span.js-versions",
-			iconButton: "img.mime-icon",
-			iconFileButton: "img.mime-icon-file",
-			iconFolderButton: "img.mime-icon-folder",
+			deleteButton: ".js-delete",
+			renameButton: ".js-rename",
+			showButton: ".js-show",
+			downloadButton: ".js-download",
+			versionsButton: ".js-versions",
+			iconButton: ".js-mime-icon",
+			iconFileButton: ".js-mime-icon-file",
+			iconFolderButton: ".js-mime-icon-folder",
 			pathButton: ".js-clipboard",
 			checkbox: ".js-select",
-			iconLoader: ".loader"
+			iconLoader: ".js-loader"
 		},
 
 		events: {
-			"mouseenter": "highlight",
-			"mouseleave": "highlight",
+			"mouseenter": "showActions",
+			"mouseleave": "hideActions",
 			"click @ui.deleteButton": "onDeleteButtonClick",
 			"click @ui.showButton": "onShowButtonClick",
 			"click @ui.downloadButton": "onDownloadButtonClick",
@@ -109,16 +108,16 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			getIcon: function() {
 				var icon = "";
 				if (this.isCol) {
-					icon = "assets/img/folder.png";
+					icon = "fa-folder-o";
 				} else {
 					if (this.mimeType === "application/pdf") {
-						icon = "assets/img/pdf.png";
+						icon = "fa-file-pdf-o";
 					} else if (this.mimeType === "text/plain") {
 						icon = "assets/img/file.png";
 					} else if (this.mimeType === "image/png" || this.mimeType === "image/jpeg") {
-						icon = "assets/img/image.png";						
+						icon = "fa-file-image-o";						
 					} else {
-						icon = "assets/img/octet-stream.png";
+						icon = "fa-gear";
 					}
 				}
 				return icon;
@@ -181,22 +180,28 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			
 		},
 		*/
-		highlight: function(e) {
-			console.log(e.target);
-			this.$el.toggleClass("info");
-			this.ui.deleteButton.toggleClass("hidden");
+		showActions: function(e) {
+			this.$el.addClass("warning");
+			this.ui.deleteButton.removeClass("hidden");
 			if (!this.model.get("isCol")) {
-				this.ui.versionsButton.toggleClass("hidden");
-				this.ui.downloadButton.toggleClass("hidden");
-				this.ui.showButton.toggleClass("hidden");
+				this.ui.versionsButton.removeClass("hidden");
+				this.ui.downloadButton.removeClass("hidden");
+				//this.ui.showButton.removeClass("hidden");
 			}
 		},
-
+		hideActions: function(e) {
+			this.$el.removeClass("warning");
+			this.ui.deleteButton.addClass("hidden");
+			if (!this.model.get("isCol")) {
+				this.ui.versionsButton.addClass("hidden");
+				this.ui.downloadButton.addClass("hidden");
+				//this.ui.showButton.addClass("hidden");
+			}
+		},
 		onDeleteButtonClick: function(e) {
 			e.preventDefault();
 			Sanato.trigger("resourcesapp:remove", this.model.get("path"));
 		},
-		
 
 		onDownloadButtonClick: function(e) {
 			e.preventDefault();
@@ -295,7 +300,6 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 
 		onNewButtonClick: function(e) {
 			e.preventDefault();
-			console.log(e);
 			this.ui.newFolderInputGroup.addClass("hidden");
 			this.ui.newFolderInput.val("");
 			this.ui.newFileInputGroup.addClass("hidden");
