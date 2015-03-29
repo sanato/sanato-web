@@ -73,7 +73,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		mkcol: function(path) {
 			var defer = $.Deferred();
 			$.ajax({
-				url: Sanato.config.baseURL + "files_mkcol" + path,
+				url: Sanato.config.baseURL + "files_mkcol/" + path,
 				type: 'POST',
 				async: true,
 				dataType: "json",
