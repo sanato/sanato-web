@@ -176,7 +176,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		var children = ResourcesApp.resourceCollectionView.children;
 		var childview = children.findByModel(model);
 		var deleteButton = childview.ui.deleteButton
-		var loader = "<img id='delete-loading-icon' src='assets/img/ajax-loader.gif' />";
+		var loader = '<i class="fa fa-spinner fa-spin"></i>';
 		var parent = deleteButton.parent();
 		deleteButton.hide();
 		parent.append(loader);
