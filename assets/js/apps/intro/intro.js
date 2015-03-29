@@ -19,8 +19,5 @@ Sanato.module("IntroApp", function(IntroApp, Sanato, Backbone, Marionette, $, _)
 				Sanato.LoginApp.start();
 			}
 		}, 1500);
-
-		// logic to check if the user is logged or not
-		// if user is loged then start resources app else start login app
 	});
 });
