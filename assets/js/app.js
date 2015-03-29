@@ -25,7 +25,6 @@ Sanato.addRegions({
 });
 
 Sanato.on("start", function() {
-	//Sanato.ResourcesApp.start();
 	if(Backbone.history) {
 		//Backbone.history.start({root: "/webprivate/sanato/index-new.html"});
 		Backbone.history.start();
