@@ -3,11 +3,12 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Sanato</title>
-		<link href="./assets/css/bootstrap.css" rel="stylesheet">
-		<link href="./assets/css/flat-ui.min.css" rel="stylesheet">
+		<link href="./assets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="./assets/css/login.css" rel="stylesheet">
 		<link href="./assets/css/application.css" rel="stylesheet">
 		<link href="./assets/css/font-awesome.min.css" rel="stylesheet">
+		<link href="./assets/css/flat-ui.min.css" rel="stylesheet">
+
 
 	</head>
 	<body>
@@ -16,12 +17,15 @@
 			
 		<script src="./assets/js/vendor/jquery.js"></script>
 		<script src="./assets/js/vendor/jquery.ui.min.js"></script>
+		<script src="./assets/js/vendor/radiocheck.js"></script>
+		<script src="./assets/js/vendor/flat-ui.min.js"></script>
+
+
 		<script src="./assets/js/vendor/json2.js"></script>
 		<script src="./assets/js/vendor/underscore.js"></script>
 		<script src="./assets/js/vendor/backbone.js"></script>
 		<script src="./assets/js/vendor/backbone.marionette.js"></script>
 		<!--<script src="./assets/js/vendor/bootstrap.min.js"></script>-->
-		<script src="./assets/js/vendor/flat-ui.min.js"></script>
 
 		<script src="./assets/js/app.js"></script>
 
@@ -60,7 +64,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
-				<span class="navbar-brand">Sanato Universal File Access</span>
+				<span class="navbar-brand">Sanato UFA</span>
 				<a class="navbar-brand" href="#">
 					<!--<img src="./assets/img/sanato-logo.png" style="max-width:100px; margin-top: -7px;"/>-->
 				</a>
@@ -126,30 +130,43 @@
 </script>
 
 <script type="text/template" id="resources-app-panel-template">
-	<div class="btn-group">
-	  <button id="new-button" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-	    New <span class="caret"></span>
-	  </button>
-	  <ul class="dropdown-menu dropdown-menu-inverse" role="menu">
-	    <li id="new-folder" ><a href="#"><i class="fa fa-folder-o"></i> Folder<!--<img class="img" src="assets/img/folder.png" height="30px" />Folder --> </a></li>
-	    <li id="new-file" ><a href="#"><i class="fa fa-file-o"></i> File<!--<img class="img" src="assets/img/file.png" height="30px" />Folder --> </a></li>
-	  </ul>
-
-	<div class="input-group hidden" id="new-file-input-group">
-		<span class="input-group-addon"><i class="fa fa-file-o"></i></span>
-		<input type="text" class="form-control" id="new-file-input" placeholder="Enter file name"/>
-	</div>
-	<div class="input-group hidden" id="new-folder-input-group">
-		<span class="input-group-addon"><i class="fa fa-folder"></i></span>
-	    <input type="text" class="form-control" id="new-folder-input" placeholder="Enter folder name"/>
-	 </div>
+	<div class="row">
+		<div class="col-md-1">
+			<div class="btn-group">
+				<button id="new-button" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				  New <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-inverse" role="menu">
+				  <li id="new-folder" ><a href="#"><i class="fa fa-folder-o fa-2x"></i> Folder</a></li>
+				  <li id="new-file" ><a href="#"><i class="fa fa-file-o fa-2x"></i> File</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="input-group hidden" id="new-file-input-group">
+				<span class="input-group-addon"><i class="fa fa-file-o"></i></span>
+				<input type="text" class="form-control" id="new-file-input" placeholder="Enter file name"/>
+			</div>
+			<div class="input-group hidden" id="new-folder-input-group">
+				<span class="input-group-addon"><i class="fa fa-folder"></i></span>
+			    <input type="text" class="form-control" id="new-folder-input" placeholder="Enter folder name"/>
+			</div>
+		</div>
+		<div class="col-md-3 col-md-offset-5">
+			<div class="input-group pull-right">
+			  <input type="text" class="form-control" placeholder="Search" id="search-query-3">
+			  <span class="input-group-btn">
+			    <button type="submit" class="btn"><span class="fui-search"></span></button>
+			  </span>
+			</div>
+		</div>
 	</div>
 </script>
 
 <script type="text/template" id="resources-app-resource-template">
     <td class="vert-align">
     	<input class="js-select" type="checkbox"/>
-    	<a href="#"><i class="fa fa-folder-o fa-2x"></i><!--<img src="<%= getIcon() %>" class="mime-icon mime-icon-<%= iconType()%> js-show" height="30px"/>--></a>
+    	<a href="#"><i class="fa <%= getIcon() %> fa-2x js-mime-icon js-mime-icon-<%= iconType()%> js-show"></i>
     	<img class="loader hidden" src='assets/img/ajax-loader.gif' />
     </td>
 	<td class="vert-align"><b><%= basePath(path) %></b></td>
