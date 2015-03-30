@@ -7,9 +7,10 @@ Sanato.module("HeaderApp", function(HeaderApp, Sanato, Backbone, Marionette, $, 
 	var API = {
 		getUser: function() {
 			var token = localStorage.getItem("sanato_token");
-			var tokenFields = token.split(".");
-			var userEncoded = tokenFields[1];
-			var userData = JSON.parse(window.atob(userEncoded));
+			//var tokenFields = token.split(".");
+			//var userEncoded = tokenFields[1];
+			//var userData = JSON.parse(window.atob(userEncoded));
+			var userData = jwt_decode(token);
 			return new HeaderApp.User(userData);
 		}
 	};
