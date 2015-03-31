@@ -7,7 +7,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			ResourcesApp.Controller._showSelectStats();
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
 
-			ResourcesApp.layoutView.getRegion("grid").$el.hide();
+			//ResourcesApp.layoutView.getRegion("grid").$el.hide();
 			var stating = Sanato.request("resourcesapp:stat", path);
 			$.when(stating).done(function(data) {
 				ResourcesApp.currentPath = path;
@@ -19,7 +19,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 				Sanato.trigger("notification:show", "danger", "stating path " + path + " failed");
 			});
 			$.when(stating).always(function() {
-				ResourcesApp.layoutView.getRegion("grid").$el.show();	
+				//ResourcesApp.layoutView.getRegion("grid").$el.show();	
 			});
 		},
 		download: function(path) {
@@ -92,7 +92,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			var model = ResourcesApp.resourceCollection.get(path);
 			var children = ResourcesApp.resourceCollectionView.children;
 			var childview = children.findByModel(model);
-			childview.$el.addClass("danger");
+			//childview.$el.addClass("danger");
 			childview.ui.checkbox.prop("checked", true);
 			ResourcesApp.selectedCollection.add(model);
 			if (ResourcesApp.resourceCollection.length === ResourcesApp.selectedCollection.length) {
@@ -105,7 +105,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			var model = ResourcesApp.resourceCollection.get(path);
 			var children = ResourcesApp.resourceCollectionView.children;
 			var childview = children.findByModel(model);
-			childview.$el.removeClass("danger");
+			//childview.$el.removeClass("danger");
 			childview.ui.checkbox.prop("checked", false);
 			ResourcesApp.selectedCollection.remove(model);
 			ResourcesApp.resourceCollectionView.ui.selectStats.text("Selected " + ResourcesApp.selectedCollection.length + " items");
@@ -116,25 +116,25 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		},
 		selectAll: function() {
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", true);
-			ResourcesApp.resourceCollectionView.ui.deleteAll.removeClass("hidden");
 			ResourcesApp.resourceCollection.forEach(function(model){
 				Sanato.trigger("resourcesapp:select", model.get("path"));
 			});
 		},
 		unselectAll: function() {
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
-			ResourcesApp.resourceCollectionView.ui.deleteAll.addClass("hidden");
 			ResourcesApp.resourceCollection.forEach(function(model){
 				Sanato.trigger("resourcesapp:unselect", model.get("path"));
 			});
 		},
 		_showSelectStats: function() {
 			if (ResourcesApp.selectedCollection.length === 0) {
+				ResourcesApp.resourceCollectionView.ui.deleteAll.addClass("hidden");
 				ResourcesApp.resourceCollectionView.ui.selectStats.text("");
 				ResourcesApp.resourceCollectionView.ui.selectStats.addClass("hidden");
 				ResourcesApp.resourceCollectionView.ui.resourceName.removeClass("hidden");
 				ResourcesApp.resourceCollectionView.ui.tableHeader.removeClass("grey");
 			} else {
+				ResourcesApp.resourceCollectionView.ui.deleteAll.removeClass("hidden");
 				ResourcesApp.resourceCollectionView.ui.selectStats.text("Selected " + ResourcesApp.selectedCollection.length + " items");
 				ResourcesApp.resourceCollectionView.ui.selectStats.removeClass("hidden");
 				ResourcesApp.resourceCollectionView.ui.resourceName.addClass("hidden");
@@ -176,7 +176,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		var children = ResourcesApp.resourceCollectionView.children;
 		var childview = children.findByModel(model);
 		var deleteButton = childview.ui.deleteButton
-		var loader = '<i class="fa fa-spinner fa-spin"></i>';
+		var loader = '<i class="fa fa-refresh fa-spin"></i>';
 		var parent = deleteButton.parent();
 		deleteButton.hide();
 		parent.append(loader);
@@ -188,7 +188,6 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		var deleteButton = childview.ui.deleteButton;
 		var parent = deleteButton.parent();
 		deleteButton.show();
-		console.log(parent);
 		parent.find("#delete-loading-icon").remove();
 	});
 
