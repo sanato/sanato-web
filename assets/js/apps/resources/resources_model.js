@@ -18,10 +18,6 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		model: ResourcesApp.Breadcrumb
 	});
 
-	var API = {
-		
-	};
-
 	Sanato.reqres.setHandler("app:files:breadcrumb:breadcrumbs", function(path) {
 		return API.getBreadcrumbs(path);
 	});
@@ -129,6 +125,23 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 				previousPath = newPath;
 			}
 			return breadcrumbCollection;
+		},
+		getIcon: function(model) {
+			var icon = "";
+			if (model.get("isCol")) {
+				icon = "fa-folder-o";
+			} else {
+				if (model.get("mimeType") === "application/pdf") {
+					icon = "fa-file-pdf-o";
+				} else if (model.get("mimeType") === "text/plain") {
+					icon = "assets/img/file.png";
+				} else if (model.get("mimeType") === "image/png" || model.get("mimeType") === "image/jpeg") {
+					icon = "fa-file-image-o";						
+				} else {
+					icon = "fa-gear";
+				}
+			}
+			return icon;
 		}
 	}
 
@@ -149,5 +162,8 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 	});
 	Sanato.reqres.setHandler("resourcesapp:breadcrumbs", function(path) {
 		return API.getBreadcrumbs(path);
+	});
+	Sanato.reqres.setHandler("resourcesapp:geticon", function(model) {
+		return API.getIcon(model);
 	});
 });
