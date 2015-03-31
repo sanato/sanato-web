@@ -167,8 +167,8 @@
 <script type="text/template" id="resources-app-resource-template">
     <td class="vert-align">
     	<input class="js-select" type="checkbox"/>
-    	<a href="#"><i class="fa <%= getIcon() %> fa-2x js-mime-icon js-mime-icon-<%= iconType()%> js-show"></i>
-    	<img class="loader hidden" src='assets/img/ajax-loader.gif' />
+    	<a href="#"><i class="fa <%= getIcon() %> fa-2x js-resource js-resource-<%= iconType()%> js-show"></i>
+    	<i class="fa fa-refresh fa-spin fa-2x loader hidden"></i>
     </td>
 	<td class="vert-align"><b><%= basePath(path) %></b></td>
 	<td class="vert-align"><a href="#"><span class="glyphicon glyphicon-eye-open js-show hidden"></span></a></td>
@@ -176,7 +176,7 @@
 	<td class="vert-align"><a href="#"><span class="glyphicon glyphicon-download js-download hidden"></span></a></td>
 	<td class="vert-align"><%= humanFileSize(size, false) %></td>
 	<td class="vert-align"><%= timeSince(modified) %></td> 
-	<td class="vert-align"><a href="#"><span class="glyphicon glyphicon-trash js-delete hidden"></span></a></td>
+	<td class="vert-align"><a href="#"><span class="fa fa-trash-o js-delete"></span></a></td>
 </script>
 
 <script type="text/template" id="resources-app-resource-collection-template">
@@ -190,7 +190,7 @@
 				<td class="col-md-1"></td>
 				<td class="col-md-2"><p id="resource-size">Size</p></td>
 				<td class="col-md-2"><p id="resource-modified">Modified</p></td>
-				<td class="col-md-1"><a href="#"><span class="glyphicon glyphicon-trash js-delete-all hidden"></span></a></td>
+				<td class="col-md-1"><a href="#"><span class="fa fa-trash-o js-delete-all hidden"></span></a></td>
 			</tr>
 		</thead>
 		<tbody>
