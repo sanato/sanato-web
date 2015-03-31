@@ -9,94 +9,39 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			breadcrumb: "#breadcrumb",
 			panel: "#panel",
 			grid: "#grid",
-			loader: "#loader"
 		}
 	});
 
 	ResourcesApp.ResourceView = Marionette.ItemView.extend({
 		template: "#resources-app-resource-template",
 		tagName: "tr",
-		onRender: function(view) {
-			view.ui.iconButton.draggable({
-				cursorAt: {
-					top: 0,
-					left: 0
-				},
-				opacity: 0.50,
-				helper: function() {
-					if (ResourcesApp.selectedCollection.length === 0) {
-						var src = view.$el.find(".js-mime-icon").attr("src");
-						var el = "<div><img src=" + src + " height='50px' width='50px'/><p>" + view.model.get("path").split("/").pop() + "</p><span class='hidden'>" + view.model.get("path") + "</span></div>";
-						return el;
-					} else {
-						var el = "<div>";
-						ResourcesApp.selectedCollection.forEach(function(model) {
-							var v = ResourcesApp.resourceCollectionView.children.findByModel(model);
-							var src = v.$el.find(".mime-icon").attr("src");
-							var tmp = "<img src=" + src + " height='50px' width='50px'/><p>" + v.model.get("path").split("/").pop() + "</p><span class='hidden'>" + v.model.get("path") + "</span>";
-							el += tmp
-						});
-						el += "</div>";
-						return el;
-					}
-
-				},
-				revert: function(dropped) {
-					if(dropped) {
-						return false;
-					} else {
-						return true;
-					}
-				}
-			});
-			if(view.model.get("isCol")) { // only folders are droppable
-				view.$el.droppable({
-					tolerance: "pointer",
-					drop: function(e, ui) {
-						if(ResourcesApp.selectedCollection.length === 0) {
-							var el = $(ui.helper);
-							var from = el.find("span").text();
-							if (from !== view.model.get("path")){
-								var el = $(ui.helper);
-								var from = el.find("span").text();
-								Sanato.trigger("resourcesapp:rename", from, view.model.get("path") + "/" +  from.split("/").pop());
-							}
-						} else {
-							ResourcesApp.selectedCollection.forEach(function(model) {
-								if (model.get("path") !== view.model.get("path")) {
-									Sanato.trigger("resourcesapp:rename", model.get("path"), view.model.get("path") + "/" +  model.get("path").split("/").pop());
-								} else {
-									Sanato.trigger("unselect", model.get("path"));
-								}
-							});
-						}
-					},
-					over: function(e, ui) {
-						//view.$el.addClass("info");
-					},
-					out: function(e, ui) {
-						//view.$el.removeClass("info");
-					}
-				});
+		attributes: function() {
+			return {
+				"data-id": this.model.get("id"),
+				"data-path": this.model.get("path"),
+				"data-mimeType": this.model.get("mimeType"),
+				"data-type": this.model.get("isCol") ? "folder" : "file",
+				"data-icon": Sanato.request("resourcesapp:geticon", this.model)
 			}
 		},
+		
 		ui: {
 			deleteButton: ".js-delete",
 			renameButton: ".js-rename",
 			showButton: ".js-show",
 			downloadButton: ".js-download",
 			versionsButton: ".js-versions",
-			iconButton: ".js-mime-icon",
-			iconFileButton: ".js-mime-icon-file",
-			iconFolderButton: ".js-mime-icon-folder",
+			iconButton: ".js-resource",
+			iconFileButton: ".js-resource-file",
+			iconFolderButton: ".js-resource-col",
 			pathButton: ".js-clipboard",
 			checkbox: ".js-select",
-			iconLoader: ".js-loader"
+			iconLoader: ".loader"
 		},
 
 		events: {
-			"mouseenter": "showActions",
-			"mouseleave": "hideActions",
+			//"mouseenter": "showActions",
+			//"mouseleave": "hideActions",
 			"click @ui.deleteButton": "onDeleteButtonClick",
 			"click @ui.showButton": "onShowButtonClick",
 			"click @ui.downloadButton": "onDownloadButtonClick",
@@ -104,71 +49,63 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			"click @ui.checkbox": "onCheckboxClick"
 			
 		},
-		templateHelpers: {
-			getIcon: function() {
-				var icon = "";
-				if (this.isCol) {
-					icon = "fa-folder-o";
-				} else {
-					if (this.mimeType === "application/pdf") {
-						icon = "fa-file-pdf-o";
-					} else if (this.mimeType === "text/plain") {
-						icon = "assets/img/file.png";
-					} else if (this.mimeType === "image/png" || this.mimeType === "image/jpeg") {
-						icon = "fa-file-image-o";						
+		templateHelpers: function() {
+			var self = this;
+			return {
+				getIcon: function() {
+					return Sanato.request("resourcesapp:geticon", self.model)
+				},
+				iconType: function() {
+					if(self.model.isCol) {
+						return "folder";
 					} else {
-						icon = "fa-gear";
+						return "file";
 					}
-				}
-				return icon;
-			},
-			iconType: function() {
-				if(this.isCol) {
-					return "folder";
-				} else {
-					return "file";
-				}
-			},
-			basePath: function(path) {
-				return path.split("/").pop();
-			},
-			timeSince: function(date) {
-				date = date * 1000;
-			    var seconds = Math.floor((new Date() - date) / 1000);
-			    var interval = Math.floor(seconds / 31536000);
+				},
+				basePath: function(path) {
+					return path.split("/").pop();
+				},
+				timeSince: function(date) {
+					date = date * 1000;
+				    var seconds = Math.floor((new Date() - date) / 1000);
+				    var interval = Math.floor(seconds / 31536000);
 
-			    if (interval > 1) {
-			        return interval + " years ago";
-			    }
-			    interval = Math.floor(seconds / 2592000);
-			    if (interval > 1) {
-			        return interval + " months ago";
-			    }
-			    interval = Math.floor(seconds / 86400);
-			    if (interval > 1) {
-			        return interval + " days ago";
-			    }
-			    interval = Math.floor(seconds / 3600);
-			    if (interval > 1) {
-			        return interval + " hours ago";
-			    }
-			    interval = Math.floor(seconds / 60);
-			    if (interval > 1) {
-			        return interval + " minutes ago";
-			    }
-			    return Math.floor(seconds) + " seconds ago";
-			},
+				    if (interval > 1) {
+				        return interval + " years ago";
+				    }
+				    interval = Math.floor(seconds / 2592000);
+				    if (interval > 1) {
+				        return interval + " months ago";
+				    }
+				    interval = Math.floor(seconds / 86400);
+				    if (interval > 1) {
+				        return interval + " days ago";
+				    }
+				    interval = Math.floor(seconds / 3600);
+				    if (interval > 1) {
+				        return interval + " hours ago";
+				    }
+				    interval = Math.floor(seconds / 60);
+				    if (interval > 1) {
+				        return interval + " minutes ago";
+				    }
+				    return Math.floor(seconds) + " seconds ago";
+				},
 
-			humanFileSize: function(bytes, si) {
-			    var thresh = si ? 1000 : 1024;
-			    if(bytes < thresh) return bytes + ' B';
-			    var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
-			    var u = -1;
-			    do {
-			        bytes /= thresh;
-			        ++u;
-			    } while(bytes >= thresh);
-			    return bytes.toFixed(1)+' '+units[u];
+				humanFileSize: function(bytes, si) {
+					if(this.isCol) {
+						return "";
+					}
+				    var thresh = si ? 1000 : 1024;
+				    if(bytes < thresh) return bytes + ' B';
+				    var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+				    var u = -1;
+				    do {
+				        bytes /= thresh;
+				        ++u;
+				    } while(bytes >= thresh);
+				    return bytes.toFixed(1)+' '+units[u];
+				}
 			}
 		},
 		
@@ -217,12 +154,79 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			}
 		},
 		onCheckboxClick: function(e) {
-			if (this.$el.hasClass("danger")) {
+			console.log(this.ui.checkbox.prop("checked"));
+			if (!this.ui.checkbox.prop("checked")) {
 				Sanato.trigger("resourcesapp:unselect", this.model.get("path"));	
 			} else {
 				Sanato.trigger("resourcesapp:select", this.model.get("path"));	
 			}
-		}
+		},
+
+		onRender: function(view) {
+			view.ui.iconButton.draggable({
+				cursorAt: {
+					top: 0,
+					left: 0
+				},
+				opacity: 0.50,
+				helper: function() {
+					if (ResourcesApp.selectedCollection.length === 0) {
+						var icon = view.$el.attr("data-icon");
+						var el = '<div><i class="fa '+icon+'"></i> '+ view.model.get("path").split("/").pop() + "</p><span class='hidden'>" + view.model.get("path") + "</span></div>";
+						return el;
+					} else {
+						var el = "<div>";
+						ResourcesApp.selectedCollection.forEach(function(model) {
+							var v = ResourcesApp.resourceCollectionView.children.findByModel(model);
+							var icon = v.$el.attr("data-icon");
+							var tmp = '<i class="fa '+icon+'"></i> ' + v.model.get("path").split("/").pop() + "</p><span class='hidden'>" + v.model.get("path") + "</span>";
+							el += tmp
+						});
+						el += "</div>";
+						return el;
+					}
+
+				},
+				revert: function(dropped) {
+					if(dropped) {
+						return false;
+					} else {
+						return true;
+					}
+				}
+			});
+			if(view.model.get("isCol")) { // only folders are droppable
+				view.$el.droppable({
+					tolerance: "pointer",
+					drop: function(e, ui) {
+						if(ResourcesApp.selectedCollection.length === 0) {
+							var el = $(ui.helper);
+							var from = el.find("span").text();
+							if (from !== view.model.get("path")){
+								var el = $(ui.helper);
+								var from = el.find("span").text();
+								Sanato.trigger("resourcesapp:rename", from, view.model.get("path") + "/" +  from.split("/").pop());
+							}
+						} else {
+							ResourcesApp.selectedCollection.forEach(function(model) {
+								if (model.get("path") !== view.model.get("path")) {
+									Sanato.trigger("resourcesapp:rename", model.get("path"), view.model.get("path") + "/" +  model.get("path").split("/").pop());
+								} else {
+									Sanato.trigger("unselect", model.get("path"));
+								}
+							});
+						}
+						view.$el.removeClass("info");
+					},
+					over: function(e, ui) {
+						view.$el.addClass("info");
+					},
+					out: function(e, ui) {
+						view.$el.removeClass("info");
+					}
+				});
+			}
+		},
 	});
 
 	ResourcesApp.ResourceCollectionView = Marionette.CompositeView.extend({
@@ -249,6 +253,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			}
 		},
 		onDeleteAllClick: function(e) {
+			e.preventDefault();
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
 			ResourcesApp.selectedCollection.forEach(function(model) {
 				Sanato.trigger("resourcesapp:remove", model.get("path"));
