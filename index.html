@@ -123,11 +123,16 @@
 		<div id="breadcrumb"></div>
 		<div id="panel"></div>
 		<div id="grid"></div>
+		<div id="loader"></div>
 	</section>
 </script>
 
 <script type="text/template" id="resources-app-breadcrumb-template">
 	<a href="<%= path %>"><%= name %></a>
+</script>
+
+<script type="text/template" id="resources-app-loader-template">
+	<i class="fa fa-refresh fa-spin fa-4x"></i>
 </script>
 
 <script type="text/template" id="resources-app-panel-template">
@@ -170,7 +175,7 @@
     	<a href="#"><i class="fa <%= getIcon() %> fa-2x js-resource js-resource-<%= iconType()%> js-show"></i>
     	<i class="fa fa-refresh fa-spin fa-2x loader hidden"></i>
     </td>
-	<td class="vert-align"><b><%= basePath(path) %></b></td>
+	<td class="vert-align"><b class="resource-name"><%= basePath(path) %></b><input class="js-rename hidden" type="text" value="<%= basePath(path) %>"/></i></td>
 	<td class="vert-align"><a href="#"><span class="glyphicon glyphicon-eye-open js-show hidden"></span></a></td>
 	<td class="vert-align"><a href="#"><span class="glyphicon glyphicon-repeat js-versions hidden"></span></a></td>
 	<td class="vert-align"><a href="#"><span class="glyphicon glyphicon-download js-download hidden"></span></a></td>
