@@ -47,9 +47,8 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		mkcol: function(path) {
 			var mkcoling = Sanato.request("resourcesapp:mkcol", path);
 			var view = ResourcesApp.panelView;
-			view.ui.newButton.toggleClass("disabled");
-			var loader = "<img class='loader' src='assets/img/ajax-loader.gif' />";
-			view.$el.append(loader);
+			view.ui.newResourceLabel.html('<i class="fa fa-refresh fa-spin"></i>');
+			view.ui.newButton.addClass("disabled");
 			$.when(mkcoling).done(function(data) {
 				var model = ResourcesApp.resourceCollection.add(data);
 				var view = ResourcesApp.resourceCollectionView.children.findByModel(model);
@@ -60,8 +59,8 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 				});
 			});
 			$.when(mkcoling).always(function() {
-				view.ui.newButton.toggleClass("disabled");
-				view.$el.find(".loader").remove();
+				view.ui.newResourceLabel.text("New");
+				view.ui.newButton.removeClass("disabled");
 			});
 		},
 		rename: function(from, to) {

@@ -325,6 +325,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			"newFolderInputGroup": "#new-folder-input-group",
 			"newFolderInput": "#new-folder-input",
 			"newFileInput": "#new-file-input",
+			"newResourceLabel": "#new-resource-label"
 		},
 		events: {
 			"click @ui.newButton": "onNewButtonClick",
@@ -365,8 +366,13 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			this.ui.newFileInput.focus();
 		},
 		onNewFileInputKeyup: function(e) {
+			var self = this;
+			e.preventDefault();
 			if (e.keyCode === 13) {
-				alert("folder created");
+				var path = ResourcesApp.currentPath === "/" ?  self.ui.newFileInput.val(): ResourcesApp.currentPath + "/" + self.ui.newFileInput.val()
+				Sanato.trigger("resourcesapp:touch", path);
+				self.ui.newFileInputGroup.addClass("hidden");
+				self.ui.newFileInput.val("");
 			} else if (e.keyCode === 27) {
 				this.ui.newFileInputGroup.toggleClass("hidden");
 				this.ui.newFileInput.val("");
