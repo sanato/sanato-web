@@ -22,6 +22,31 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		return API.getBreadcrumbs(path);
 	});
 	var API = {
+		touch: function(path) {
+			var defer = $.Deferred();
+			var bytesArray = new Uint8Array(0);
+			$.ajax({
+				url: Sanato.config.baseURL + "files_put/" + path,
+				type: 'PUT',
+				contentType: 'application/octet-stream',  
+				data: bytesArray,
+				processData: false,
+				dataType: 'json',
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
+				},
+				success: function(data) {
+					defer.resolve(data);
+				},
+				error: function() {
+					defer.reject();
+				}
+			});
+			return defer.promise();
+		},
+		put: function(path, body) {
+
+		},
 		stat: function(path) {
 			var defer = $.Deferred();
 			$.ajax({
@@ -146,6 +171,9 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		}
 	}
 
+	Sanato.reqres.setHandler("resourcesapp:touch", function(path) {
+		return API.touch(path);
+	});
 	Sanato.reqres.setHandler("resourcesapp:stat", function(path) {
 		return API.stat(path);
 	});
