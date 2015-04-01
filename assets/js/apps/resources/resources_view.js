@@ -9,6 +9,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			breadcrumb: "#breadcrumb",
 			panel: "#panel",
 			grid: "#grid",
+			loader: "#loader"
 		}
 	});
 
@@ -26,6 +27,8 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		},
 		
 		ui: {
+			resourceName: ".resource-name",
+			renameInput: ".js-rename",
 			deleteButton: ".js-delete",
 			renameButton: ".js-rename",
 			showButton: ".js-show",
@@ -40,6 +43,9 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		},
 
 		events: {
+			"dblclick @ui.resourceName": "showRenameInput",
+			"blur @ui.renameInput": "hideRenameInput",
+			"keyup @ui.renameInput": "hideRenameInputKeyup",
 			//"mouseenter": "showActions",
 			//"mouseleave": "hideActions",
 			"click @ui.deleteButton": "onDeleteButtonClick",
@@ -48,6 +54,31 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			"click @ui.iconButton": "onIconButtonClick",
 			"click @ui.checkbox": "onCheckboxClick"
 			
+		},
+		showRenameInput: function(e) {
+			this.ui.resourceName.addClass("hidden");
+			this.ui.renameInput.removeClass("hidden").focus().select();
+		},
+		hideRenameInput: function(e) {
+			e.preventDefault();
+			var newName = this.ui.renameInput.val();
+			var newPath = this.model.get("path").replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + "/" + newName;
+			this.ui.resourceName.removeClass("hidden");
+			this.ui.renameInput.addClass("hidden");
+			if(newPath === this.model.get("path")) {
+				return
+			}
+			Sanato.trigger("resourcesapp:rename", this.model.get("path"), newPath);	
+		},
+		hideRenameInputKeyup: function(e) {
+			e.preventDefault();
+			if(e.keyCode === 13) {
+				this.ui.resourceName.removeClass("hidden");
+
+				// hidding the element trigger the lose of blur/focusout
+				// so we don´t need to duplciate code
+				this.ui.renameInput.addClass("hidden");
+			}
 		},
 		templateHelpers: function() {
 			var self = this;
@@ -341,5 +372,11 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 				this.ui.newFileInput.val("");
 			}
 		}
+	});
+
+	ResourcesApp.LoaderView = Marionette.ItemView.extend({
+		template: "#resources-app-loader-template",
+		tagName: "div",
+		className: "centered"
 	});
 });

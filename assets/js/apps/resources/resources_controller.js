@@ -6,8 +6,8 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			ResourcesApp.selectedCollection.reset();
 			ResourcesApp.Controller._showSelectStats();
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", false);
-
-			//ResourcesApp.layoutView.getRegion("grid").$el.hide();
+			ResourcesApp.layoutView.getRegion("loader").show(new ResourcesApp.LoaderView());
+			ResourcesApp.layoutView.getRegion("grid").$el.hide();
 			var stating = Sanato.request("resourcesapp:stat", path);
 			$.when(stating).done(function(data) {
 				ResourcesApp.currentPath = path;
@@ -19,8 +19,10 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 				Sanato.trigger("notification:show", "danger", "stating path " + path + " failed");
 			});
 			$.when(stating).always(function() {
-				//ResourcesApp.layoutView.getRegion("grid").$el.show();	
+				ResourcesApp.layoutView.getRegion("grid").$el.show();	
+				ResourcesApp.layoutView.getRegion("loader").empty();
 			});
+			
 		},
 		download: function(path) {
 			Sanato.request("resourcesapp:download", path);
@@ -70,9 +72,16 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			childview.ui.iconLoader.removeClass("hidden");
 
 			var renaming = Sanato.request("resourcesapp:rename", from, to);
-			$.when(renaming).done(function() {
-				console.log("rename done");
+			$.when(renaming).done(function(data) {
 				ResourcesApp.resourceCollection.remove(ResourcesApp.resourceCollection.get(from));
+				
+				// we only add the new renamed resource is the old was in the same dir.
+				// I.E, in a move we don´t add the resource, but in a rename yes.
+				// http://phpjs.org/functions/dirname/
+				if(from.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') === to.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '')) {
+					ResourcesApp.resourceCollection.add(new ResourcesApp.Resource(data));
+				}
+
 				ResourcesApp.resourceCollectionView.ui.selectStats.text("Selected " + ResourcesApp.selectedCollection.length + " items");
 				if (ResourcesApp.selectedCollection.length === 0) {
 					ResourcesApp.resourceCollectionView.ui.selectStats.text("");

@@ -92,13 +92,14 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 					url: Sanato.config.baseURL + "files_rename?from=" + from + "&to=" + to,
 					type: 'POST',
 					async: true,
+					dataType: 'json',
 					beforeSend: function (xhr) {
 						xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
 					},
 					success: function(data) {
-						defer.resolve();
+						defer.resolve(data);
 					},
-					error: function() {
+					error: function(data) {
 						defer.reject();
 					}
 				});
