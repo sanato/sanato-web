@@ -30,6 +30,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		ResourcesApp.layoutView.getRegion("breadcrumb").show(ResourcesApp.breadcrumbCollectionView);
 		ResourcesApp.layoutView.getRegion("panel").show(ResourcesApp.panelView);
 		ResourcesApp.layoutView.getRegion("grid").show(ResourcesApp.resourceCollectionView);
+		//ResourcesApp.layoutView.getRegion("loader").show(new ResourcesApp.LoaderView());
 
 
 
