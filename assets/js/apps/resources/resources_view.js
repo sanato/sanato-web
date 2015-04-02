@@ -325,16 +325,29 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			"newFolderInputGroup": "#new-folder-input-group",
 			"newFolderInput": "#new-folder-input",
 			"newFileInput": "#new-file-input",
-			"newResourceLabel": "#new-resource-label"
+			"newResourceLabel": "#new-resource-label",
+			"uploadButton": ".js-upload",
+			"uploadInput": "#upload-input"
 		},
 		events: {
 			"click @ui.newButton": "onNewButtonClick",
 			"click @ui.newFolderButton": "onNewFolderButtonClick",
 			"keyup @ui.newFolderInput": "onNewFolderInputKeyup",
 			"click @ui.newFileButton": "onNewFileButtonClick",
-			"keyup @ui.newFileInput": "onNewFileInputKeyup"
+			"keyup @ui.newFileInput": "onNewFileInputKeyup",
+			"click @ui.uploadButton": "onUploadButtonClick",
+			"change @ui.uploadInput": "onUploadInputChange",
 		},
+		onUploadInputChange: function(e) {
+			console.log(e);
+			var file = e.target.files.item(0);
 
+			    Sanato.trigger("resourcesapp:put", ResourcesApp.currentPath + "/" + file.name, file);
+
+		},
+		onUploadButtonClick: function(e) {
+			this.ui.uploadInput.click();
+		},
 		onNewButtonClick: function(e) {
 			e.preventDefault();
 			this.ui.newFolderInputGroup.addClass("hidden");
