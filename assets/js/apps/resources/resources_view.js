@@ -327,7 +327,8 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			"newFileInput": "#new-file-input",
 			"newResourceLabel": "#new-resource-label",
 			"uploadButton": ".js-upload",
-			"uploadInput": "#upload-input"
+			"uploadInput": "#upload-input",
+			"uploadLabel": "#upload-label"
 		},
 		events: {
 			"click @ui.newButton": "onNewButtonClick",

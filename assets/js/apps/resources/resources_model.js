@@ -75,21 +75,19 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		},
 		remove: function(path) {
 			var defer = $.Deferred();
-			setTimeout(function(){
-				$.ajax({
-					url: Sanato.config.baseURL + "files_delete" + path,
-					type: 'POST',
-					async: true,
-					beforeSend: function (xhr) {
-						xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
-					},
-					success: function(data) {
-						defer.resolve();
-					},
-					error: function() {
-						defer.reject();
-					}})
-			},2000);
+			$.ajax({
+				url: Sanato.config.baseURL + "files_delete" + path,
+				type: 'POST',
+				async: true,
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
+				},
+				success: function(data) {
+					defer.resolve();
+				},
+				error: function() {
+					defer.reject();
+			}});
 			
 			return defer.promise();
 		},
@@ -114,23 +112,21 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		},
 		rename: function(from , to) {
 			var defer = $.Deferred();
-			setTimeout(function() {
-				$.ajax({
-					url: Sanato.config.baseURL + "files_rename?from=" + from + "&to=" + to,
-					type: 'POST',
-					async: true,
-					dataType: 'json',
-					beforeSend: function (xhr) {
-						xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
-					},
-					success: function(data) {
-						defer.resolve(data);
-					},
-					error: function(data) {
-						defer.reject();
-					}
-				});
-			},2000);
+			$.ajax({
+				url: Sanato.config.baseURL + "files_rename?from=" + from + "&to=" + to,
+				type: 'POST',
+				async: true,
+				dataType: 'json',
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('sanato_token'));
+				},
+				success: function(data) {
+					defer.resolve(data);
+				},
+				error: function(data) {
+					defer.reject();
+				}
+			});
 			return defer.promise();
 		},
 		getBreadcrumbs: function(path) {

@@ -5,8 +5,8 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		put: function(path, binaryData) {
 			var puting = Sanato.request("resourcesapp:put", path, binaryData);
 			var view = ResourcesApp.panelView;
-			view.ui.newResourceLabel.html('<i class="fa fa-refresh fa-spin"></i>');
-			view.ui.newButton.addClass("disabled");
+			view.ui.uploadLabel.html('<i class="fa fa-refresh fa-spin"></i>');
+			view.ui.uploadButton.addClass("disabled");
 			$.when(puting).done(function(data) {
 				var model = ResourcesApp.resourceCollection.add(data);
 				var view = ResourcesApp.resourceCollectionView.children.findByModel(model);
@@ -17,8 +17,8 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 				});
 			});
 			$.when(puting).always(function() {
-				view.ui.newResourceLabel.text("New");
-				view.ui.newButton.removeClass("disabled");
+				view.ui.uploadLabel.html('<i class="fa fa-cloud-upload"> Upload</i>');
+				view.ui.uploadButton.removeClass("disabled");
 			});
 		},
 		touch: function(path) {
