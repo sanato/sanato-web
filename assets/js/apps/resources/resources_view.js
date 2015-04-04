@@ -340,11 +340,12 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			"change @ui.uploadInput": "onUploadInputChange",
 		},
 		onUploadInputChange: function(e) {
-			console.log(e);
-			var file = e.target.files.item(0);
-
-			    Sanato.trigger("resourcesapp:put", ResourcesApp.currentPath + "/" + file.name, file);
-
+			//var uploadQueue = [];
+			//for(var i = 0; i < e.target.files.length; i++) {
+				//var file = e.target.files.item(i);
+				//Sanato.trigger("resourcesapp:put", ResourcesApp.currentPath + "/" + file.name, file);
+				Sanato.trigger("resourcesapp:put", e.target.files);
+			//}
 		},
 		onUploadButtonClick: function(e) {
 			this.ui.uploadInput.click();

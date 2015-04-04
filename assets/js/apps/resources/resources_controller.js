@@ -2,24 +2,30 @@
 
 Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionette, $, _) {
 	ResourcesApp.Controller = {
-		put: function(path, binaryData) {
-			var puting = Sanato.request("resourcesapp:put", path, binaryData);
+		put: function(files) {
 			var view = ResourcesApp.panelView;
 			view.ui.uploadLabel.html('<i class="fa fa-refresh fa-spin"></i>');
 			view.ui.uploadButton.addClass("disabled");
-			$.when(puting).done(function(data) {
-				var model = ResourcesApp.resourceCollection.add(data);
-				var view = ResourcesApp.resourceCollectionView.children.findByModel(model);
-				view.$el.toggleClass("warning");
-				view.$el.fadeOut(function() {
-					view.$el.fadeIn();
+			var uploadQueue = [];
+			for(var i = 0; i < files.length; i++) {
+				var file = files.item(i);
+				var puting = Sanato.request("resourcesapp:put", ResourcesApp.currentPath + "/" + file.name, file);
+				uploadQueue.push(puting);
+			    
+			    $.when(puting).done(function(data) {
+					var model = ResourcesApp.resourceCollection.add(data);
+					var view = ResourcesApp.resourceCollectionView.children.findByModel(model);
 					view.$el.toggleClass("warning");
+					view.$el.fadeOut(function() {
+						view.$el.fadeIn();
+						view.$el.toggleClass("warning");
+					});
 				});
-			});
-			$.when(puting).always(function() {
+			}
+			$.when.apply($, uploadQueue).done(function() {
 				view.ui.uploadLabel.html('<i class="fa fa-cloud-upload"> Upload</i>');
 				view.ui.uploadButton.removeClass("disabled");
-			});
+			})
 		},
 		touch: function(path) {
 			var touching = Sanato.request("resourcesapp:touch", path);
