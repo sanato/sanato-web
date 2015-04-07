@@ -45,7 +45,10 @@
 		<script src="./assets/js/apps/header/header_controller.js"></script>
 		<script src="./assets/js/apps/header/header_view.js"></script>		
 
-
+		<script src="./assets/js/apps/notification/notification.js"></script>
+		<script src="./assets/js/apps/notification/notification-model.js"></script>
+		<script src="./assets/js/apps/notification/notification-controller.js"></script>
+		<script src="./assets/js/apps/notification/notification-view.js"></script>
 
 		<script src="./assets/js/apps/resources/resources.js"></script>
 		<script src="./assets/js/apps/resources/resources_controller.js"></script>
@@ -79,10 +82,7 @@
 </script>
 
 <script type="text/template" id="notification-app-template">
-	<div class="container">
-		<p>Notification app template</p>
-		<div class="alert alert-<%= type %>"><p class="text-center"><%= message %></p></div>
-	</div>
+	<div class="alert alert-<%= type %>"><p class="text-center"><%= message %></p></div>
 </script>
 
 <script type="text/template" id="footer-app-template">
@@ -165,9 +165,9 @@
 			
 		<div class="col-md-3 col-md-offset-2">
 			<div class="input-group pull-right">
-			  <input type="text" class="form-control" placeholder="Search" id="search-query-3">
+			  <input type="text" class="form-control" placeholder="Search" id="search-input">
 			  <span class="input-group-btn">
-			    <button type="submit" class="btn"><span class="fui-search"></span></button>
+			    <button id="search-button" type="button" class="btn"><span class="fui-search"></span></button>
 			  </span>
 			</div>
 		</div>
@@ -190,7 +190,7 @@
 	<td class="vert-align"><a href="#"><span class="glyphicon glyphicon-download js-download hidden"></span></a></td>
 	<td class="vert-align"><%= humanFileSize(size, false) %></td>
 	<td class="vert-align"><%= timeSince(modified) %></td> 
-	<td class="vert-align"><a href="#"><span class="fa fa-trash-o js-delete"></span></a></td>
+	<td class="vert-align"><a href="#"><span class="fa fa-trash-o js-delete"></span><i class="fa fa-refresh fa-spin delete-loader hidden"></i></a></td>
 </script>
 
 <script type="text/template" id="resources-app-resource-collection-template">

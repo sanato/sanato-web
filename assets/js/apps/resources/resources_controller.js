@@ -21,6 +21,9 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 						view.$el.toggleClass("warning");
 					});
 				});
+				$.when(puting).fail(function() {
+					Sanato.trigger("notificationapp:add", "danger", "Failed uploading  " + file.name);
+				});
 			}
 			$.when.apply($, uploadQueue).done(function() {
 				view.ui.uploadLabel.html('<i class="fa fa-cloud-upload"> Upload</i>');
@@ -76,6 +79,12 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			var removing = Sanato.request("resourcesapp:remove", path);
 			$.when(removing).done(function() {
 				ResourcesApp.resourceCollection.remove(ResourcesApp.resourceCollection.get(path));
+				
+			});
+			$.when(removing).fail(function() {
+				Sanato.execute("set:resourcesapp:deleteiconloader:hide", path);
+			});
+			$.when(removing).always(function() {
 				ResourcesApp.resourceCollectionView.ui.selectStats.text("Selected " + ResourcesApp.selectedCollection.length + " items");
 				if (ResourcesApp.selectedCollection.length === 0) {
 					ResourcesApp.resourceCollectionView.ui.selectStats.text("");
@@ -83,9 +92,6 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 					ResourcesApp.resourceCollectionView.ui.resourceName.removeClass("hidden");
 					ResourcesApp.resourceCollectionView.ui.tableHeader.removeClass("grey");
 				}
-			});
-			$.when(removing).fail(function() {
-				console.log("fail remove");
 			});
 		},
 		mkcol: function(path) {
@@ -140,6 +146,35 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 				console.log("renaming failed");
 			});
 		},
+		filter: function(name) {
+			name = name.toLowerCase();
+			var modelsToShow = [];
+			var modelsToHide = [];
+			var children = ResourcesApp.resourceCollectionView.children;
+
+			if (name !== "") {
+				modelsToShow = ResourcesApp.resourceCollection.filter(function(model) {
+					return model.get("path").split("/").pop().toLowerCase().indexOf(name) !== -1; 
+				});
+				modelsToHide = ResourcesApp.resourceCollection.filter(function(model) {
+					return model.get("path").split("/").pop().toLowerCase().indexOf(name) === -1; 
+				});	
+			} else {
+				modelsToShow = ResourcesApp.resourceCollection;
+				modelsToHide = [];
+			}
+			
+			modelsToShow.forEach(function(model) {
+				var view = children.findByModel(model);
+				view.$el.removeClass("hidden");
+				model.unset("hidden");
+			});
+			modelsToHide.forEach(function(model) {
+				var view = children.findByModel(model);
+				view.$el.addClass("hidden");
+				model.set({"hidden":true});
+			});
+		},
 		select: function(path) {
 			var model = ResourcesApp.resourceCollection.get(path);
 			var children = ResourcesApp.resourceCollectionView.children;
@@ -169,7 +204,9 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 		selectAll: function() {
 			ResourcesApp.resourceCollectionView.ui.checkboxAll.prop("checked", true);
 			ResourcesApp.resourceCollection.forEach(function(model){
-				Sanato.trigger("resourcesapp:select", model.get("path"));
+				if(!model.has("hidden")) {
+					Sanato.trigger("resourcesapp:select", model.get("path"));
+				}
 			});
 		},
 		unselectAll: function() {
@@ -228,25 +265,26 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 	Sanato.on("resourcesapp:unselectall", function(path) {
 		return ResourcesApp.Controller.unselectAll(path);
 	});
-
+	Sanato.on("resourcesapp:filter", function(name) {
+		return ResourcesApp.Controller.filter(name);
+	});
 	Sanato.commands.setHandler("set:resourcesapp:deleteiconloader:show",function(path) {
 		var model = ResourcesApp.resourceCollection.get(path);
 		var children = ResourcesApp.resourceCollectionView.children;
 		var childview = children.findByModel(model);
 		var deleteButton = childview.ui.deleteButton
-		var loader = '<i class="fa fa-refresh fa-spin"></i>';
-		var parent = deleteButton.parent();
-		deleteButton.hide();
-		parent.append(loader);
+		var deleteButtonLoader = childview.ui.deleteButtonLoader;
+		deleteButton.addClass("hidden");
+		deleteButtonLoader.removeClass("hidden");		
 	});
 	Sanato.commands.setHandler("set:resourcesapp:deleteiconloader:hide",function(path) {
 		var model = ResourcesApp.resourceCollection.get(path);
 		var children = ResourcesApp.resourceCollectionView.children;
 		var childview = children.findByModel(model);
-		var deleteButton = childview.ui.deleteButton;
-		var parent = deleteButton.parent();
-		deleteButton.show();
-		parent.find("#delete-loading-icon").remove();
+		var deleteButton = childview.ui.deleteButton
+		var deleteButtonLoader = childview.ui.deleteButtonLoader;
+		deleteButton.removeClass("hidden");
+		deleteButtonLoader.addClass("hidden");
 	});
 
 	ResourcesApp.on("start", function() {

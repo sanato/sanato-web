@@ -30,6 +30,7 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			resourceName: ".resource-name",
 			renameInput: ".js-rename",
 			deleteButton: ".js-delete",
+			deleteButtonLoader: ".delete-loader",
 			renameButton: ".js-rename",
 			showButton: ".js-show",
 			downloadButton: ".js-download",
@@ -328,7 +329,9 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			"newResourceLabel": "#new-resource-label",
 			"uploadButton": ".js-upload",
 			"uploadInput": "#upload-input",
-			"uploadLabel": "#upload-label"
+			"uploadLabel": "#upload-label",
+			"searchInput": "#search-input",
+			"searchButton": "#search-button"
 		},
 		events: {
 			"click @ui.newButton": "onNewButtonClick",
@@ -338,6 +341,17 @@ Sanato.module("ResourcesApp", function(ResourcesApp, Sanato, Backbone, Marionett
 			"keyup @ui.newFileInput": "onNewFileInputKeyup",
 			"click @ui.uploadButton": "onUploadButtonClick",
 			"change @ui.uploadInput": "onUploadInputChange",
+			"click @ui.searchButton": "onSearchButtonClick",
+			"keyup @ui.searchInput": "onSearchInputKeyup"
+		},
+		onSearchInputKeyup: function(e) {
+			console.log(e);
+			var name = $(e.target).val();
+			Sanato.trigger("resourcesapp:filter", name);
+		},
+		onSearchButtonClick: function(e) {
+			var name = this.ui.searchInput.val();
+			Sanato.trigger("resourcesapp:filter", name);
 		},
 		onUploadInputChange: function(e) {
 			//var uploadQueue = [];
