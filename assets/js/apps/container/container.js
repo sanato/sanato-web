@@ -17,5 +17,6 @@ Sanato.module("ContainerApp", function(ContainerApp, Sanato, Backbone, Marionett
 		ContainerApp.layoutView = new ContainerApp.LayoutView();
 		Sanato.getRegion("main").show(ContainerApp.layoutView);
 		Sanato.HeaderApp.start();
+		Sanato.NotificationApp.start();
 	});
 });
