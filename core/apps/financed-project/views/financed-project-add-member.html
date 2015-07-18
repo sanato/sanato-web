@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add member</h4>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <div class="form-group">
+      <label for="members">Members</label>
+      <select class="form-control"  ng-init="member = members_to_add[0].id" ng-model="member" ng-options="member_to_add.id as member_to_add.first_name + ' ' + member_to_add.last_name for member_to_add in members_to_add"></select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success btn-xs" ng-click="financedProjectAddMember(financed_project.id, member);$close()">Add</button>
+  <button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>

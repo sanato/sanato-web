@@ -1,0 +1,120 @@
+<div class="modal-header">
+  <h3 class="modal-title">Update publication</h3>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <tabset>
+      <tab heading="Main details">
+        <br>
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" placeholder="Enter publication title" ng-model="publicationZ.title">
+        </div>
+        <div class="form-group">
+          <label for="year">Year</label>
+          <input type="number" class="form-control" placeholder="Enter publication year" ng-model="publicationZ.year">
+        </div>
+        <div class="form-group">
+          <label for="Author">Primary author</label>
+          <select class="form-control" ng-model="publicationZ.primary_author" ng-options="author.id as author.first_name + ' ' + author.last_name for author in authors"></select>
+        </div>
+        <div class="form-group">
+          <label for="Type">Type</label>
+          <select class="form-control" ng-model="publicationZ.publication_type" ng-options="publication_type.id as publication_type.name for publication_type in publication_types"></select>
+        </div>
+        <div class="form-group">
+          <label for="publisher">Publisher</label>
+          <select class="form-control"  ng-init="publicationZ.publisher = publishers[0].id" ng-model="publicationZ.publisher" ng-options="publisher.id as publisher.name for publisher in publishers"></select>
+        </div>
+      </tab>
+      <tab heading="Identification">
+        <br>
+        <div class="form-group">
+          <label for="book_title">Book title</label>
+          <input type="text" class="form-control" placeholder="Enter publication book title" ng-model="publicationZ.book_title">
+        </div>
+        <div class="form-group">
+          <label for="chapter">Chapter</label>
+          <input type="text" class="form-control" placeholder="Enter publication chapter" ng-model="publicationZ.chapter">
+        </div>
+        <div class="form-group">
+          <label for="conference_name">Conference name</label>
+          <input type="text" class="form-control" placeholder="Enter publication conference name" ng-model="publicationZ.conference_name">
+        </div>
+        <div class="form-group">
+          <label for="edition">Edition</label>
+          <input type="text" class="form-control" placeholder="Enter publication edition" ng-model="publicationZ.edition">
+        </div>
+        <div class="form-group">
+          <label for="isbn">ISBN</label>
+          <input type="text" class="form-control" placeholder="Enter publication isbn" ng-model="publicationZ.isbn">
+        </div>
+        <div class="form-group">
+          <label for="issn">ISSN</label>
+          <input type="text" class="form-control" placeholder="Enter publication issn" ng-model="publicationZ.issn">
+        </div>
+        <div class="form-group">
+          <label for="volume">Volume</label>
+          <input type="text" class="form-control" placeholder="Enter publication volume" ng-model="publicationZ.volume">
+        </div>
+        <div class="form-group">
+          <label for="journal">Journal</label>
+          <input type="text" class="form-control" placeholder="Enter publication journal" ng-model="publicationZ.journal">
+        </div>
+
+        <div class="form-group">
+          <label for="number">Number</label>
+          <input type="text" class="form-control" placeholder="Enter publication number" ng-model="publicationZ.number">
+        </div>
+        <div class="form-group">
+          <label for="organization">Organization</label>
+          <input type="text" class="form-control" placeholder="Enter publication organization" ng-model="publicationZ.organization">
+        </div>
+        <div class="form-group">
+          <label for="pages">Pages</label>
+          <input type="text" class="form-control" placeholder="Enter publication pages" ng-model="publicationZ.pages">
+        </div>
+
+        <div class="form-group">
+          <label for="series">Series</label>
+          <input type="text" class="form-control" placeholder="Enter publication series" ng-model="publicationZ.series">
+        </div>
+        <div class="form-group">
+          <label for="volume">Volume</label>
+          <input type="text" class="form-control" placeholder="Enter publication volume" ng-model="publicationZ.volume">
+        </div>
+      </tab>
+      <tab heading="Location">
+        <br>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" class="form-control" placeholder="Enter publication city" ng-model="publicationZ.city">
+        </div>
+         <div class="form-group">
+          <label for="country">Country</label>
+          <input type="text" class="form-control" placeholder="Enter publication country" ng-model="publicationZ.country">
+        </div>
+        <div class="form-group">
+          <label for="institution">Institution</label>
+          <input type="text" class="form-control" placeholder="Enter publication institution" ng-model="publicationZ.institution">
+        </div>
+        <div class="form-group">
+          <label for="language">Language</label>
+          <input type="text" class="form-control" placeholder="Enter publication language" ng-model="publicationZ.language">
+        </div>
+        <div class="form-group">
+          <label for="nationality">Nationality</label>
+          <input type="text" class="form-control" placeholder="Enter publication nationality" ng-model="publicationZ.nationality">
+        </div>
+        <div class="form-group">
+          <label for="school">School</label>
+          <input type="text" class="form-control" placeholder="Enter publication school" ng-model="publicationZ.school">
+        </div>
+      </tab>
+    </tabset>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary btn-xs" ng-click="publicationUpdate(publicationZ)">Update</button>
+  <button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>

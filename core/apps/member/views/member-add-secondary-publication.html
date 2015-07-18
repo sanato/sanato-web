@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add seconary publication</h4>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <div class="form-group">
+      <label for="publications">Publications</label>
+      <select class="form-control"  ng-init="publication = publications_to_add[0].id" ng-model="publication" ng-options="publication_to_add.id as publication_to_add.title for publication_to_add in publications_to_add"></select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success btn-xs" ng-click="memberAddSecondaryPublication(member.id, publication);$close()">Add</button>
+  <button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>

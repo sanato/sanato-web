@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add research line</h4>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <div class="form-group">
+      <label for="research_lines">Research lines</label>
+      <select class="form-control"  ng-init="research_line = research_lines_to_add[0].id" ng-model="research_line" ng-options="research_line_to_add.id as research_line_to_add.title for research_line_to_add in research_lines_to_add"></select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success btn-xs" ng-click="partnerAddResearchLine(partner.id, research_line);$close()">Add</button>
+  <button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>

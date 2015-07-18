@@ -1,0 +1,43 @@
+<div class="row">
+  <div class="col-lg-12">
+    <instanto-widget>
+    <instanto-widget-header icon="fa-eye" title="Research areas">
+    <button class="btn btn-success btn-xs" ng-click="openCreateForm()">New</button>
+    </instanto-widget-header>
+    <instanto-widget-body classes="no-padding">
+    <div class="table-responsive">
+      <table st-table="research_areas_copy" st-safe-src="research_areas" class="table table-hover">
+        <thead>
+          <tr>
+            <th st-sort="id">Id</th>
+            <th st-sort="name" st-sort-default>Name</th>
+            <th st-sort="created_by">Created by</th>
+            <th st-sort="created_at">Created at</th>
+            <th st-sort="updated_by">Updated by</th>
+            <th st-sort="updated_at">Updated at</th>
+            <th st-sort=""></th>
+          </tr>
+          <tr>
+            <th colspan="7">
+              <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="research_area in research_areas_copy">
+            <td>{{research_area.id}}</td>
+            <td>{{research_area.name}}</td>
+            <td>{{research_area.created_by}}</td>
+            <td>{{research_area.created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+            <td>{{research_area.updated_by}}</td>
+            <td>{{research_area.updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+            <td><button class="btn btn-success btn-xs" ui-sref="research-area-view({researchareaid: research_area.id})"><span class="fa fa-eye"></span></button>
+            <button class="btn btn-primary btn-xs" ng-click="openUpdateForm(research_area)"><span class="fa fa-edit"></span></button><button class="btn btn-danger btn-xs" ng-click="researchAreaDelete(research_area.id)"><span class="fa fa-trash-o"></span></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    </instanto-widget-body>
+    </instanto-widget>
+  </div>
+</div>

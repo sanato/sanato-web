@@ -1,0 +1,121 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Funding body detail</h3>
+            </div>
+            <div class="panel-body">
+                <p><b>Name</b>: {{funding_body.name}}</p>
+                <p><b>Web</b>: {{funding_body.web}}</p>
+                <p><b>Scope</b>: {{funding_body.scope}}</p>
+                <p><b>Created by</b>: {{funding_body.created_by}}</p>
+                <p><b>Created at</b>: {{funding_body.created_at}}</p>
+                <p><b>Updated by</b>: {{funding_body.updated_by}}</p>
+                <p><b>Updated at</b>: {{funding_body.updated_at}}</p>
+                <button class="btn btn-primary btn-xs" ng-click="openUpdateForm(funding_body)">Update</button>
+                <button class="btn btn-danger btn-xs" ng-click="fundingBodyDelete(funding_body.id)">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Funding body relations</h3>
+            </div>
+            <div class="panel-body">
+                <tabset>
+                    <tab heading="Primary financed projects">
+                      <br>
+                      <table class="table table-hover" st-table="funding_body_primary_financed_projects_copy" st-safe-src="funding_body_primary_financed_projects" >
+                        <thead>
+                          <tr>
+                            <th st-sort="id">Id</th>
+                            <th st-sort="title" st-sort-default>Title</th>
+                            <th st-sort="started">Started</th>
+                            <th st-sort="ended">Ended</th>
+                            <th st-sort="budget">Budget (&euro;)</th>
+                            <th st-sort="created_by">Created by</th>
+                            <th st-sort="created_at">Created at</th>
+                            <th st-sort="updated_by">Updated by</th>
+                            <th st-sort="updated_at">Updated at</th>
+                            <th></th>
+                          </tr>
+                          <tr>
+                            <th colspan="10">
+                              <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="funding_body_primary_financed_project in funding_body_primary_financed_projects_copy">
+                            <td>{{funding_body_primary_financed_project.id}}</td>
+                            <td>{{funding_body_primary_financed_project.title}}</td>
+                            <td>{{funding_body_primary_financed_project.started * 1000 | date : "yyyy/MM/dd"}}</td>
+                            <td>{{funding_body_primary_financed_project.ended * 1000 | date : "yyyy/MM/dd"}}</td>
+                            <td>{{funding_body_primary_financed_project.budget}}</td>
+                            <td>{{funding_body_primary_financed_project.created_by}}</td>
+                            <td>{{funding_body_primary_financed_project.created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                            <td>{{funding_body_primary_financed_project.updated_by}}</td>
+                            <td>{{funding_body_primary_financed_project.updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                            <td>
+                              <button class="btn btn-success btn-xs" ui-sref="financed-project-view({financedprojectid: funding_body_primary_financed_project.id})"><span class="fa fa-eye"></span></button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </tab>
+                    <tab heading="Secondary financed projects">
+                      <br>
+                      <button class="btn btn-success btn-xs" ng-click="openAddSecondaryFinancedProjectForm()">Add</button>
+                      <table class="table table-hover" st-table="funding_body_secondary_financed_projects_copy" st-safe-src="funding_body_secondary_financed_projects" >
+                        <thead>
+                          <tr>
+                            <th st-sort="id">Id</th>
+                            <th st-sort="title" st-sort-default>Title</th>
+                            <th st-sort="started">Started</th>
+                            <th st-sort="ended">Ended</th>
+                            <th st-sort="budget">Budget (&euro;)</th>
+                            <th st-sort="created_by">Created by</th>
+                            <th st-sort="created_at">Created at</th>
+                            <th st-sort="updated_by">Updated by</th>
+                            <th st-sort="updated_at">Updated at</th>
+                            <th st-sort="funding_body_created_by">Addded by</th>
+                            <th st-sort="funding_body_created_at">Added at</th>
+                            <th st-sort="funding_body_record">Record</th>
+                            <th></th>
+                          </tr>
+                          <tr>
+                            <th colspan="13">
+                              <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="funding_body_secondary_financed_project in funding_body_secondary_financed_projects_copy">
+                            <td>{{funding_body_secondary_financed_project.id}}</td>
+                            <td>{{funding_body_secondary_financed_project.title}}</td>
+                            <td>{{funding_body_secondary_financed_project.started * 1000 | date : "yyyy/MM/dd"}}</td>
+                            <td>{{funding_body_secondary_financed_project.ended * 1000 | date : "yyyy/MM/dd"}}</td>
+                            <td>{{funding_body_secondary_financed_project.budget}}</td>
+                            <td>{{funding_body_secondary_financed_project.created_by}}</td>
+                            <td>{{funding_body_secondary_financed_project.created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                            <td>{{funding_body_secondary_financed_project.updated_by}}</td>
+                            <td>{{funding_body_secondary_financed_project.updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                            <td>{{funding_body_secondary_financed_project.funding_body_created_by}}</td>
+                            <td>{{funding_body_secondary_financed_project.funding_body_updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                            <td>{{funding_body_secondary_financed_project.funding_body_record}}</td>
+                            <td>
+                              <button class="btn btn-success btn-xs" ui-sref="financed-project-view({financedprojectid: funding_body_secondary_financed_project.id})"><span class="fa fa-eye"></span></button>
+                              <button class="btn btn-danger btn-xs" ng-click="fundingBodyRemoveSecondaryFinancedProject(funding_body.id,funding_body_secondary_financed_project.id)"><span class="fa fa-minus"></span></button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </tab>
+                  </tabset>
+            </div>
+        </div>
+    </div>
+</div>

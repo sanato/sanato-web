@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add secondary member</h4>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <div class="form-group">
+      <label for="members">Members</label>
+      <select class="form-control"  ng-init="member = secondary_members_to_add[0].id" ng-model="member" ng-options="secondary_member_to_add.id as secondary_member_to_add.first_name+' '+secondary_member_to_add.last_name for secondary_member_to_add in secondary_members_to_add"></select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success btn-xs" ng-click="statusAddSecondaryMember(status.id, member);$close()">Add</button>
+  <button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>

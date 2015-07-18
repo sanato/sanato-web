@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add article</h4>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <div class="form-group">
+      <label for="articles">Articles</label>
+      <select class="form-control"  ng-init="article = articles_to_add[0].id" ng-model="article" ng-options="article_to_add.id as article_to_add.title for article_to_add in articles_to_add"></select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success btn-xs" ng-click="researchLineAddArticle(research_line.id, article);$close()">Add</button>
+  <button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>

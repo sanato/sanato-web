@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h3 class="modal-title">Update student work</h3>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control" placeholder="Enter title" ng-model="student_workZ.title">
+    </div>
+    <div class="form-group">
+      <label for="year">Year</label>
+      <input type="number" class="form-control" placeholder="Enter year" ng-model="student_workZ.year">
+    </div>
+    <div class="form-group">
+      <label for="school">School</label>
+      <input type="text" class="form-control" placeholder="Enter school" ng-model="student_workZ.school">
+    </div>
+    <div class="form-group">
+      <label for="volume">Volume</label>
+      <input type="text" class="form-control" placeholder="Enter volume" ng-model="student_workZ.volume">
+    </div>
+    <div class="form-group">
+      <label for="Author">Author</label>
+      <select class="form-control" ng-model="student_workZ.author" ng-options="author.id as author.first_name + ' ' + author.last_name for author in authors"></select>
+    </div>
+    <div class="form-group">
+      <label for="Type">Type</label>
+      <select class="form-control" ng-model="student_workZ.student_work_type" ng-options="student_work_type.id as student_work_type.name for student_work_type in student_work_types"></select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary btn-xs" ng-click="studentWorkUpdate(student_workZ)">Update</button>
+  <button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>

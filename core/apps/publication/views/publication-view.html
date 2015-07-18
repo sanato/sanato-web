@@ -1,0 +1,102 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Publication detail</h3>
+            </div>
+            <div class="panel-body">
+                <p><b>Title</b>: {{publication.title}}</p>
+                <p><b>Year</b>: {{publication.year}}</p>
+                <p><b>School</b>: {{publication.school}}</p>
+                <p><b>Volume</b>: {{publication.volume}}</p>
+                <p><b>Primary author</b>: <a ui-sref="member-view({memberid:publication.primary_author_doc.id})">{{publication.primary_author_doc.first_name + ' ' + publication.primary_author_doc.last_name}}</a></p>
+                <p><b>Type</b>: <a ui-sref="publication-type-view({publicationtypeid:publication.publication_type_doc.id})">{{publication.publication_type_doc.name}}</a></p>
+                <p><b>Created by</b>: {{publication.created_by}}</p>
+                <p><b>Created at</b>: {{publication.created_at}}</p>
+                <p><b>Updated by</b>: {{publication.updated_by}}</p>
+                <p><b>Updated at</b>: {{publication.updated_at}}</p>
+                <button class="btn btn-primary btn-xs" ng-click="openUpdateForm(publication)">Update</button>
+                <button class="btn btn-danger btn-xs" ng-click="publicationDelete(publication.id)">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Publication relations</h3>
+            </div>
+            <div class="panel-body">
+                <tabset>
+                    <tab heading="Co-authors">
+                      <br>
+                      <button class="btn btn-success btn-xs" ng-click="openAddSecondaryAuthorForm()">Add</button>
+                      <table class="table table-hover" st-table="publication_secondary_authors_copy" st-safe-src="publication_secondary_authors" >
+                        <thead>
+                          <tr>
+                            <th st-sort="id">Id</th>
+                            <th st-sort="first_name" st-sort-default st-skip-natural="true">First name</th>
+                            <th st-sort="last_name">Last name</th>
+                            <th st-sort="publication_created_by">Added by</th>
+                            <th st-sort="publication_created_at">Added at</th>
+                            <th></td>
+                          </tr>
+                          <tr>
+                            <th colspan="6">
+                              <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="publication_secondary_author in publication_secondary_authors_copy">
+                            <td>{{publication_secondary_author.id}}</td>
+                            <td>{{publication_secondary_author.first_name}}</td>
+                            <td>{{publication_secondary_author.last_name}}</td>
+                            <td>{{publication_secondary_author.publication_created_by}}</td>
+                            <td>{{publication_secondary_author.publication_created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                            <td>
+                              <button class="btn btn-success btn-xs" ui-sref="member-view({memberid: publication_secondary_author.id})"><span class="fa fa-eye"></span></button>
+                              <button class="btn btn-danger btn-xs" ng-click="publicationRemoveSecondaryAuthor(publication.id,publication_secondary_author.id)"><span class="fa fa-minus"></span></button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </tab>
+                    <tab heading="Research lines">
+                     <br>
+                      <button class="btn btn-success btn-xs" ng-click="openAddResearchLineForm()">Add</button>
+                      <table class="table table-hover" st-table="research_lines_copy" st-safe-src="research_lines" >
+                        <thead>
+                          <tr>
+                            <th st-sort="id">Id</th>
+                            <th st-sort="title" st-sort-default st-skip-natural="true">Title</th>
+                            <th st-sort="publication_created_by">Added by</th>
+                            <th st-sort="publication_created_at">Added at</th>
+                            <th></th>
+                          </tr>
+                          <tr>
+                            <th colspan="6">
+                              <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="research_line in research_lines_copy">
+                            <td>{{research_line.id}}</td>
+                            <td>{{research_line.title}}</td>
+                            <td>{{research_line.publication_created_by}}</td>
+                            <td>{{research_line.publication_created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                             <td>
+                              <button class="btn btn-success btn-xs" ui-sref="research-line-view({researchlineid: research_line.id})"><span class="fa fa-eye"></span></button>
+                              <button class="btn btn-danger btn-xs" ng-click="publicationRemoveResearchLine(publication.id, research_line.id)"><span class="fa fa-minus"></span></button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </tab>
+                </tabset>
+            </div>
+        </div>
+    </div>
+</div>

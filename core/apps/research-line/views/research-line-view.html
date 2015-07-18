@@ -1,0 +1,371 @@
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Research line detail</h3>
+            </div>
+            <div class="panel-body">
+                <p><b>Name</b>: {{research_line.title}}</p>
+                <p><b>Description</b>: {{research_line.description}}</p>
+                <p><b>Finished</b>: {{research_line.finished}}</p>
+                <p><b>Primary research area</b>: <a ui-sref="research-area-view({researchareaid:research_line.primary_research_area})">{{research_line.primary_research_area_doc.name}}</a></p>
+                <p><b>Created by</b>: {{research_line.created_by}}</p>
+                <p><b>Created at</b>: {{research_line.created_at}}</p>
+                <p><b>Updated by</b>: {{research_line.updated_by}}</p>
+                <p><b>Updated at</b>: {{research_line.updated_at}}</p>
+                <button class="btn btn-success btn-xs" ng-click="openUpdateForm(research_line)">Update</button>
+                <button class="btn btn-danger btn-xs" ng-click="researchLineDelete(research_line.id)">Delete</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Research line logo</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <button class="btn btn-primary btn-xs" ng-click="doClick()">Upload logo</button>
+                        <input id="file-input" type="file" style="display:none" onchange="angular.element(this).scope().handleFileUpload(this)">
+                        <button ng-show="research_line.logo" class="btn btn-danger btn-xs" ng-click="researchLineDeleteLogo(research_line)">Delete logo</button>
+                    </div>
+                    <div class="col-lg-6">
+                        <div>
+                            <a ng-show="research_line.logo"  href="http://localhost:3000/api/media/{{research_line.logo}}" target="_blanck"><img class="img-thumbnail" ng-src="http://localhost:3000/api/media/{{research_line.logo}}" height="200px" width="200px" /></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Research line relations</h3>
+            </div>
+            <div class="panel-body">
+                <accordion>
+                    <accordion-group>
+                        <accordion-heading>
+                            <span class="label label-success"><span class="menu-icon fa fa-dollar"></span> Financed projects</span> This research line has these financed projects <span class="pull-right badge">{{research_line_financed_projects.length}}</span>
+                        </accordion-heading>
+                        <br>
+                        <button class="btn btn-success btn-xs" ng-click="openAddFinancedProjectForm()">Add</button>
+                        <table class="table table-hover" st-table="research_line_financed_projects_copy" st-safe-src="research_line_financed_projects" >
+                            <thead>
+                                <tr>
+                                    <th st-sort="id">Id</th>
+                                    <th st-sort="title" st-sort-default>Title</th>
+                                    <th st-sort="started">Started</th>
+                                    <th st-sort="ended">Ended</th>
+                                    <th st-sort="budget">Budget (&euro;)</th>
+                                    <th st-sort="created_by">Created by</th>
+                                    <th st-sort="created_at">Created at</th>
+                                    <th st-sort="updated_by">Updated by</th>
+                                    <th st-sort="updated_at">Updated at</th>
+                                    <th st-sort="research_line_created_by">Added by</th>
+                                    <th st-sort="research_line_created_at">Added at</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="12">
+                                        <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="research_line_financed_project in research_line_financed_projects_copy">
+                                    <td>{{research_line_financed_project.id}}</td>
+                                    <td>{{research_line_financed_project.title}}</td>
+                                    <td>{{research_line_financed_project.started * 1000 | date : "yyyy/MM/dd"}}</td>
+                                    <td>{{research_line_financed_project.ended * 1000 | date : "yyyy/MM/dd"}}</td>
+                                    <td>{{research_line_financed_project.budget}}</td>
+                                    <td>{{research_line_financed_project.created_by}}</td>
+                                    <td>{{research_line_financed_project.created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td>{{research_line_financed_project.updated_by}}</td>
+                                    <td>{{research_line_financed_project.updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td>{{research_line_financed_project.research_line_created_by}}</td>
+                                    <td>{{research_line_financed_project.research_line_created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td>
+                                        <button class="btn btn-success btn-xs" ui-sref="financed-project-view({financedprojectid: research_line_financed_project.id})"><span class="fa fa-eye"></span></button>
+                                        <button class="btn btn-danger btn-xs" ng-click="researchLineRemoveFinancedProject(research_line.id,research_line_financed_project.id)"><span class="fa fa-minus"></span></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </accordion-group>
+                    <accordion-group>
+                        <accordion-heading>
+                            <span class="label label-success"><span class="menu-icon fa fa-columns"></span> Articles</span> This research line has these articles <span class="pull-right badge">{{research_line_articles.length}}</span>
+                        </accordion-heading>
+                        <br>
+                        <button class="btn btn-success btn-xs" ng-click="openAddArticleForm()">Add</button>
+                        <table class="table table-hover" st-table="research_line_articles_copy" st-safe-src="research_line_articles" >
+                            <thead>
+                                <thead>
+                                    <tr>
+                                        <th st-sort="id">Id</th>
+                                        <th st-sort="title" st-sort-default>Title</th>
+                                        <th st-sort="date">Date</th>
+                                        <th st-sort="created_by">Created by</th>
+                                        <th st-sort="created_at">Created at</th>
+                                        <th st-sort="updated_by">Updated by</th>
+                                        <th st-sort="updated_at">Updated at</th>
+                                        <th st-sort="research_line_created_by">Added by</th>
+                                        <th st-sort="research_line_created_at">Added at</th>
+                                        <th></th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="10">
+                                            <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="research_line_article in research_line_articles_copy">
+                                        <td>{{research_line_article.id}}</td>
+                                        <td>{{research_line_article.title}}</td>
+                                        <td>{{research_line_article.date * 1000 | date : "yyyy/MM/dd"}}</td>
+                                        <td>{{research_line_article.created_by}}</td>
+                                        <td>{{research_line_article.created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                        <td>{{research_line_article.updated_by}}</td>
+                                        <td>{{research_line_article.updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                        <td>{{research_line_article.research_line_created_by}}</td>
+                                        <td>{{research_line_article.research_line_created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                        <td>
+                                            <button class="btn btn-success btn-xs" ui-sref="article-view({artilceid: research_line_article.id})"><span class="fa fa-eye"></span></button>
+                                            <button class="btn btn-danger btn-xs" ng-click="researchLineRemoveArticle(research_line.id,research_line_article.id)"><span class="fa fa-minus"></span></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </accordion-group>
+                        <accordion-group>
+                            <accordion-heading>
+                                <span class="label label-success"><span class="menu-icon fa fa-slideshare"></span> Partners</span> This research line has these partners <span class="pull-right badge">{{research_line_partners.length}}</span>
+                            </accordion-heading>
+                            <br>
+                            <button class="btn btn-success btn-xs" ng-click="openAddPartnerForm()">Add</button>
+                            <table class="table table-hover" st-table="research_line_partners_copy" st-safe-src="research_line_partners" >
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th st-sort="name" st-sort-default>Name</th>
+                                        <th st-sort="created_by">Created by</th>
+                                        <th st-sort="created_at">Created at</th>
+                                        <th st-sort="updated_by">Updated by</th>
+                                        <th st-sort="updated_at">Updated at</th>
+                                        <th st-sort="research_line_created_at">Added at</th>
+                                        <th st-sort="research_line_updated_by">Added by</th>
+                                        <th></th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="10">
+                                            <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="research_line_partner in research_line_partners_copy">
+                                        <td>{{research_line_partner.id}}</td>
+                                        <td>{{research_line_partner.name}}</td>
+                                        <td>{{research_line_partner.created_by}}</td>
+                                        <td>{{research_line_partner.created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                        <td>{{research_line_partner.updated_by}}</td>
+                                        <td>{{research_line_partner.updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                        <td>{{research_line_partner.research_line_created_by}}</td>
+                                        <td>{{research_line_partner.research_line_created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                        <td>
+                                            <button class="btn btn-success btn-xs" ui-sref="partner-view({partnerid: research_line_partner.id})"><span class="fa fa-eye"></span></button>
+                                            <button class="btn btn-danger btn-xs" ng-click="researchLineRemovePartner(research_line.id,research_line_partner.id)"><span class="fa fa-minus"></span></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </accordion-group>
+                        <accordion-group>
+                            <accordion-heading>
+                                <span class="label label-success"><span class="menu-icon fa fa-user"></span> Members</span> This research line has these members involved <span class="pull-right badge">{{research_line_members.length}}</span>
+                            </accordion-heading>
+                            <br>
+                            <button class="btn btn-success btn-xs" ng-click="openAddMemberForm()"><span class="fa fa-plus"></span> Add</button>
+                            <table class="table table-hover" st-table="research_line_members_copy" st-safe-src="research_line_members" >
+                                <thead>
+                                    <tr>
+                                        <th st-sort="id">Id</th>
+                                        <th st-sort="first_name" st-sort-default st-skip-natural="true">First name</th>
+                                        <th st-sort="last_name">Last name</th>
+                                        <th st-sort="created_by">Created by</th>
+                                        <th st-sort="created_at">Created at</th>
+                                        <th st-sort="updated_by">Updated by</th>
+                                        <th st-sort="updated_at">Updated at</th>
+                                        <th st-sort="research_line_created_by">Added by</th>
+                                        <th st-sort="research_line_created_at">Added at</th>
+                                    <th></td>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">
+                                        <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="research_line_member in research_line_members_copy">
+                                    <td><label class="badge">{{research_line_member.id}}</label></td>
+                                    <td>{{research_line_member.first_name}}</td>
+                                    <td>{{research_line_member.last_name}}</td>
+                                    <td><span class="label label-primary">{{research_line_member.created_by}}</span></td>
+                                    <td>{{research_line_member.created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td><span class="label label-primary">{{research_line_member.updated_by}}</span></td>
+                                    <td>{{research_line_member.updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td><span class="label label-primary">{{research_line_member.research_line_created_by}}</span></td>
+                                    <td>{{research_line_member.research_line_created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td>
+                                        <button class="btn btn-success btn-xs" ui-sref="member-view({memberid: research_line_member.id})"><span class="fa fa-eye"></span></button>
+                                        <button class="btn btn-danger btn-xs" ng-click="researchLineRemoveMember(research_line.id, research_line_member.id)"><span class="fa fa-minus"></span></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </accordion-group>
+                    <accordion-group>
+                        <accordion-heading>
+                            <span class="label label-success"><span class="menu-icon fa fa-book"></span> Publications</span> This research line has these publications <span class="pull-right badge">{{research_line_publications.length}}</span>
+                        </accordion-heading>
+                        <br>
+                        <button class="btn btn-success btn-xs" ng-click="openAddPublicationForm()"><span class="fa fa-plus"></span> Add</button>
+                        <table class="table table-hover" st-table="research_line_publications_copy" st-safe-src="research_line_publications" >
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th st-sort="title" st-sort-default>Title</th>
+                                    <th st-sort="year" st-sort-default>Year</th>
+                                    <th st-sort="created_by">Created by</th>
+                                    <th st-sort="created_at">Created at</th>
+                                    <th st-sort="updated_by">Updated by</th>
+                                    <th st-sort="updated_at">Updated at</th>
+                                    <th st-sort="research_line_created_by">Added by</th>
+                                    <th st-sort="research_line_created_at">Added at</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">
+                                        <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="research_line_publication in research_line_publications_copy">
+                                    <td><label class="badge">{{research_line_publication.id}}</label></td>
+                                    <td>{{research_line_publication.title}}</td>
+                                    <td>{{research_line_publication.year}}</td>
+                                    <td><span class="label label-primary">{{research_line_publication.created_by}}</span></td>
+                                    <td>{{research_line_publication.created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td><span class="label label-primary">{{research_line_publication.updated_by}}</span></td>
+                                    <td>{{research_line_publication.updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td><span class="label label-primary">{{research_line_publication.research_line_created_by}}</span></td>
+                                    <td>{{research_line_publication.research_line_created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td>
+                                        <button class="btn btn-success btn-xs" ui-sref="publication-view({publicationid: research_line_publication.id})"><span class="fa fa-eye"></span></button>
+                                        <button class="btn btn-danger btn-xs" ng-click="researchLineRemovePublication(research_line.id, research_line_publication.id)"><span class="fa fa-minus"></span></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </accordion-group>
+                    <accordion-group>
+                        <accordion-heading>
+                            <span class="label label-success"><span class="menu-icon fa fa-graduation-cap"></span> Student works</span> This research line has these student works <span class="pull-right badge">{{research_line_student_works.length}}</span>
+                        </accordion-heading>
+                        <br>
+                        <button class="btn btn-success btn-xs" ng-click="openAddStudentWorkForm()"><span class="fa fa-plus"></span> Add</button>
+                        <table class="table table-hover" st-table="research_line_student_works_copy" st-safe-src="research_line_student_works" >
+                            <thead>
+                                <tr>
+                                    <th st-sort="id">Id</th>
+                                    <th st-sort="title" st-sort-default>Title</th>
+                                    <th st-sort="year">Year</th>
+                                    <th st-sort="created_by">Created by</th>
+                                    <th st-sort="created_at">Created at</th>
+                                    <th st-sort="updated_by">Updated by</th>
+                                    <th st-sort="updated_at">Updated at</th>
+                                    <th st-sort="research_line_created_by">Added by</th>
+                                    <th st-sort="research_line_created_at">Added at</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">
+                                        <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="research_line_student_work in research_line_student_works_copy">
+                                    <td><label class="badge">{{research_line_student_work.id}}</label></td>
+                                    <td>{{research_line_student_work.title}}</td>
+                                    <td>{{research_line_student_work.year}}</td>
+                                    <td><span class="label label-primary">{{research_line_student_work.created_by}}</span></td>
+                                    <td>{{research_line_student_work.created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td><span class="label label-primary">{{research_line_student_work.updated_by}}</span></td>
+                                    <td>{{research_line_student_work.updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td><span class="label label-primary">{{research_line_student_work.research_line_created_by}}</span></td>
+                                    <td>{{research_line_student_work.research_line_created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td>
+                                        <button class="btn btn-success btn-xs" ui-sref="student-work-view({studentworkid: research_line_student_work.id})"><span class="fa fa-eye"></span></button>
+                                        <button class="btn btn-danger btn-xs" ng-click="researchLineRemoveStudentWork(research_line.id, research_line_student_work.id)"><span class="fa fa-minus"></span></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </accordion-group>
+                    <accordion-group>
+                        <accordion-heading>
+                            <span class="label label-success"><span class="menu-icon fa fa-eye"></span> Research areas</span> This research line has also these research areas apart from {{research_line.primary_research_area_doc.name}} <span class="pull-right badge">{{research_line_secondary_research_areas.length}}</span>
+                        </accordion-heading>
+                        <br>
+                        <button class="btn btn-success btn-xs" ng-click="openAddSecondaryResearchAreaForm()"><span class="fa fa-plus"></span> Add</button>
+                        <table class="table table-hover" st-table="research_line_secondary_research_areas_copy" st-safe-src="research_line_secondary_research_areas" >
+                            <thead>
+                                <tr>
+                                    <th st-sort="id">Id</th>
+                                    <th st-sort="name" st-sort-default>Name</th>
+                                    <th st-sort="created_by">Created by</th>
+                                    <th st-sort="created_at">Created at</th>
+                                    <th st-sort="updated_by">Updated by</th>
+                                    <th st-sort="updated_at">Updated at</th>
+                                    <th st-sort="research_line_created_by">Added by</th>
+                                    <th st-sort="research_line_created_at">Added at</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <th colspan="10">
+                                        <input st-search="" class="form-control" placeholder="global search ..." type="text" st-delay=0 >
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="research_line_secondary_research_area in research_line_secondary_research_areas_copy">
+                                    <td><label class="badge">{{research_line_secondary_research_area.id}}</label></td>
+                                    <td>{{research_line_secondary_research_area.name}}</td>
+                                    <td><span class="label label-primary">{{research_line_secondary_research_area.created_by}}</span></td>
+                                    <td>{{research_line_secondary_research_area.created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td><span class="label label-primary">{{research_line_secondary_research_area.updated_by}}</span></td>
+                                    <td>{{research_line_secondary_research_area.updated_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td><span class="label label-primary">{{research_line_secondary_research_area.research_line_created_by}}</span></td>
+                                    <td>{{research_line_secondary_research_area.research_line_created_at * 1000| date : "yyyy/MM/dd HH:mm:ss"}}</td>
+                                    <td>
+                                        <button class="btn btn-success btn-xs" ui-sref="student-work-view({studentworkid: research_line_secondary_research_area.id})"><span class="fa fa-eye"></span></button>
+                                        <button class="btn btn-danger btn-xs" ng-click="researchLineRemoveSecondaryResearchArea(research_line.id, research_line_secondary_research_area.id)"><span class="fa fa-minus"></span></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </accordion-group>
+                </accordion>
+            </div>
+        </div>
+    </div>
+</div>

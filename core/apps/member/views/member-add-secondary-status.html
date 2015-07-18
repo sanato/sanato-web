@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add status</h4>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <div class="form-group">
+      <label for="statuses">Statuses</label>
+      <select class="form-control"  ng-init="status = statuses_to_add[0].id" ng-model="status" ng-options="status_to_add.id as status_to_add.name for status_to_add in statuses_to_add"></select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success btn-xs" ng-click="memberAddSecondaryStatus(member.id, status);$close()">Add</button>
+  <button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>

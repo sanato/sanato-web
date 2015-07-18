@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <h4 class="modal-title">Add secondary financed project</h4>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <div class="form-group">
+      <label for="financed_projects">Financed projects</label>
+      <select class="form-control"  ng-init="financed_project = secondary_financed_projects_to_add[0].id" ng-model="financed_project" ng-options="secondary_financed_project_to_add.id as secondary_financed_project_to_add.title  for secondary_financed_project_to_add in secondary_financed_projects_to_add"></select>
+    </div>
+    <div class="form-group">
+      <label for="record">Record</label>
+      <input type="text" class="form-control" placeholder="Enter record" ng-model="record">
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success btn-xs" ng-click="fundingBodyAddSecondaryFinancedProject(funding_body.id, financed_project, record);$close()">Add</button>
+  <button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>

@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h3 class="modal-title">Create research area</h3>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" placeholder="Enter research area name" ng-model="research_area.name">
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success btn-xs" ng-click="researchAreaCreate(research_area)">Create</button>
+  <button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>

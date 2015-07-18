@@ -1,0 +1,47 @@
+<div class="modal-header">
+  <h3 class="modal-title">Create member</h3>
+</div>
+<div class="modal-body">
+  <form role="form">
+    <div class="form-group">
+      <label for="first_name">First name</label>
+      <input type="text" class="form-control" placeholder="Enter member first name" ng-init="$element.focus()" ng-model="member.first_name">
+    </div>
+    <div class="form-group">
+      <label for="last_name">Last name</label>
+      <input type="text" class="form-control" placeholder="Enter member last name" ng-model="member.last_name">
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="text" class="form-control" placeholder="Enter member email" ng-model="member.email">
+    </div>
+    <label for="degree"> Degree </label>
+    <div class="form-group radio">
+      <label class="radio-inline">
+        <input type="radio" name="degree" value="none"  ng-model="member.degree"> None
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name="degree" value="dr" ng-model="member.degree"> Dr
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name="degree" value="dra" ng-model="member.degree"> Dra
+      </label>
+    </div>
+    <div class="form-group">
+      <label for="year_in">Year in</label>
+      <input type="number" class="form-control" ng-model="member.year_in">
+    </div>
+    <div class="form-group">
+      <label for="year_out">Year out</label>
+      <input type="number" class="form-control" ng-model="member.year_out">
+    </div>
+    <div class="form-group">
+      <label for="primary_status">Primary status</label>
+      <select class="form-control"  ng-init="member.primary_status = statuses[0].id" ng-model="member.primary_status" ng-options="status.id as status.name for status in statuses"></select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+<button class="btn btn-success btn-xs" ng-click="memberCreate(member)">Create</button>
+<button class="btn btn-danger btn-xs" ng-click="$close()">Cancel</button>
+</div>
